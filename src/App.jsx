@@ -1,6 +1,8 @@
-import React from 'react';
+import * as React from 'react';
 
 const App = () => {
+  console.log('App renders');
+
   const stories = [
     {
       title: 'React',
@@ -26,44 +28,77 @@ const App = () => {
     setSearchTerm(event.target.value);
   };
 
-  const searchedStories = stories.filter(story =>
+  const searchedStories = stories.filter((story) =>
     story.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div>
       <h1>My Hacker Stories</h1>
-      <Search onSearch={handleSearch} />
+      <Search search={searchTerm} onSearch={handleSearch} />
       <hr />
       <List list={searchedStories} />
     </div>
   );
 };
 
-const List = (props) => (
-  <ul>
-    {props.list.map(item => (
-      <Item key={item.objectID} item={item} />
-    ))}
-  </ul>
-);
+const Search = ({ search, onSearch }) => {
+  console.log('Search renders');
 
-const Item = (props) => (
-  <li>
-    <span>
-      <a href={props.item.url}>{props.item.title}</a>
-    </span>
-    <span>{props.item.author}</span>
-    <span>{props.item.num_comments}</span>
-    <span>{props.item.points}</span>
-  </li>
-);
+  const handleChange = (event) => {
+    onSearch(event);
+  };
 
-const Search = (props) => (
-  <div>
-    <label htmlFor="search">Search: </label>
-    <input id="search" type="text" onChange={props.onSearch} />
-  </div>
-);
+  return (
+    <div>
+      <label htmlFor="search">Search: </label>
+      <input
+        id="search"
+        type="text"
+        value={search}
+        onChange={handleChange}
+      />
+    </div>
+  );
+};
+
+const List = (props) => {
+  console.log('List renders');
+  return (
+    <ul>
+      {props.list.map((item) => (
+        <Item key={item.objectID} item={item} />
+      ))}
+    </ul>
+  );
+};
+
+const Item = (props) => {
+  console.log('Item renders with:', props.item.title);
+  return (
+    <li>
+      <span>
+        <a href={props.item.url}>{props.item.title}</a>
+      </span>
+      <span>{props.item.author}</span>
+      <span>{props.item.num_comments}</span>
+      <span>{props.item.points}</span>
+    </li>
+  );
+};
 
 export default App;
+
+
+const Search = ({ searchTerm, onSearch }) => {
+  console.log('Search renders');
+  return (
+    <div>
+      <label htmlFor="search">Search: </label>
+      <input id="search" type="text" value={searchTerm} onChange={onSearch} />
+    </div>
+  );
+};
+
+
+
