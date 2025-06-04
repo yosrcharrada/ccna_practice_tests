@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const stories = [
     {
@@ -20,9 +20,13 @@ const stories = [
 ];
 
 const App = () => {
-    console.log('App renders');
+    const [searchTerm, setSearchTerm] = useState(() => {
+        return localStorage.getItem('search') || '';
+    });
 
-    const [searchTerm, setSearchTerm] = useState('');
+    useEffect(() => {
+        localStorage.setItem('search', searchTerm);
+    }, [searchTerm]);
 
     const handleSearch = (event) => {
         setSearchTerm(event.target.value);
@@ -42,8 +46,6 @@ const App = () => {
 };
 
 const Search = ({ searchTerm, onSearch }) => {
-    console.log('Search renders');
-
     return (
         <div>
             <label htmlFor="search">Search: </label>
@@ -52,26 +54,18 @@ const Search = ({ searchTerm, onSearch }) => {
     );
 };
 
-const List = ({ list }) => {
-    console.log('List renders');
+const List = ({ list }) => (
+    <ul>
+        {list.map((item) => (
+            <Item key={item.objectID} item={item} />
+        ))}
+    </ul>
+);
 
-    return (
-        <ul>
-            {list.map((item) => (
-                <Item key={item.objectID} item={item} />
-            ))}
-        </ul>
-    );
-};
-
-const Item = ({ item }) => {
-    console.log('Item renders');
-
-    return (
-        <li>
-            <a href={item.url}>{item.title}</a> by {item.author} ({item.num_comments} comments, {item.points} points)
-        </li>
-    );
-};
+const Item = ({ item: { title, url, author, num_comments, points } }) => (
+    <li>
+        <a href={url}>{title}</a> by {author} ({num_comments} comments, {points} points)
+    </li>
+);
 
 export default App;
