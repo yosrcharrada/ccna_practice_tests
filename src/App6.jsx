@@ -31,11 +31,15 @@ const App = () => {
 const List = (props) => (
     <ul>
         {props.list.map((item) => (
-            <li key={item.objectID}>
-                <a href={item.url}>{item.title}</a>
-            </li>
+            <Item key={item.objectID} item={item} />
         ))}
     </ul>
+);
+
+const Item = (props) => (
+    <li>
+        <a href={props.item.url}>{props.item.title}</a>
+    </li>
 );
 
 export default App;
