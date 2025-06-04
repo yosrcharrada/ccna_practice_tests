@@ -7,14 +7,13 @@ const App = () => {
     const [stories, setStories] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
     const [isError, setIsError] = React.useState(false);
+    const [url, setUrl] = React.useState(`${API_ENDPOINT}React`);
 
     React.useEffect(() => {
-        if (!searchTerm) return;
-
         setIsLoading(true);
         setIsError(false);
 
-        fetch(`${API_ENDPOINT}${searchTerm}`)
+        fetch(url)
             .then((response) => response.json())
             .then((result) => {
                 setStories(result.hits);
@@ -24,10 +23,14 @@ const App = () => {
                 setIsLoading(false);
                 setIsError(true);
             });
-    }, [searchTerm]);
+    }, [url]);
 
     const handleSearchInput = (event) => {
         setSearchTerm(event.target.value);
+    };
+
+    const handleSearchSubmit = () => {
+        setUrl(`${API_ENDPOINT}${searchTerm}`);
     };
 
     const handleRemoveStory = (item) => {
@@ -41,6 +44,9 @@ const App = () => {
         <div>
             <h1>My Hacker News App</h1>
             <input type="text" value={searchTerm} onChange={handleSearchInput} />
+            <button type="button" onClick={handleSearchSubmit} disabled={!searchTerm}>
+                Submit
+            </button>
             <hr />
             {isError && <p>Something went wrong ...</p>}
             {isLoading ? (
