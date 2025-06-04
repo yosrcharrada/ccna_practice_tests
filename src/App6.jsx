@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const App = () => {
     const stories = [
@@ -20,13 +20,24 @@ const App = () => {
         },
     ];
 
+    const [searchTerm, setSearchTerm] = useState('');
+
     return (
         <div>
             <h1>My Hacker Stories</h1>
+            <Search />
+            <p>Searching for <strong>{searchTerm}</strong></p>
             <List list={stories} />
         </div>
     );
 };
+
+const Search = () => (
+    <div>
+        <label htmlFor="search">Search: </label>
+        <input id="search" type="text" />
+    </div>
+);
 
 const List = (props) => (
     <ul>
