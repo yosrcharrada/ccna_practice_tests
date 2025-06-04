@@ -7,7 +7,8 @@ const App = () => {
 
     return (
         <div>
-            <h1>My First React Component</h1>
+            <h1>{externalTitle}</h1>
+            <h2>{internalTitle}</h2>
         </div>
     );
 };
