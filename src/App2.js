@@ -1,6 +1,7 @@
 import React from 'react';
 
 const externalTitle = 'External Variable Title';
+const user = { firstName: 'Alice', lastName: 'Doe' };
 
 const App = () => {
     const internalTitle = 'Internal Variable Title';
@@ -11,6 +12,7 @@ const App = () => {
             <h2>{internalTitle}</h2>
             <label htmlFor="name">Name:</label>
             <input id="name" type="text" />
+            <p>User: {user.firstName} {user.lastName}</p>
         </div>
     );
 };
