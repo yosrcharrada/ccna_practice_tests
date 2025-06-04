@@ -1,26 +1,26 @@
 import React, { useState } from 'react';
 
+const stories = [
+    {
+        title: 'React',
+        url: 'https://reactjs.org/',
+        author: 'Jordan Walke',
+        num_comments: 3,
+        points: 4,
+        objectID: 0,
+    },
+    {
+        title: 'Redux',
+        url: 'https://redux.js.org/',
+        author: 'Dan Abramov',
+        num_comments: 2,
+        points: 5,
+        objectID: 1,
+    },
+];
+
 const App = () => {
     console.log('App renders');
-
-    const stories = [
-        {
-            title: 'React',
-            url: 'https://reactjs.org/',
-            author: 'Jordan Walke',
-            num_comments: 3,
-            points: 4,
-            objectID: 0,
-        },
-        {
-            title: 'Redux',
-            url: 'https://redux.js.org/',
-            author: 'Dan Abramov',
-            num_comments: 2,
-            points: 5,
-            objectID: 1,
-        },
-    ];
 
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -28,12 +28,15 @@ const App = () => {
         setSearchTerm(event.target.value);
     };
 
+    const filteredStories = stories.filter((story) =>
+        story.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div>
             <h1>My Hacker Stories</h1>
             <Search searchTerm={searchTerm} onSearch={handleSearch} />
-            <p>Searching for <strong>{searchTerm}</strong></p>
-            <List list={stories} />
+            <List list={filteredStories} />
         </div>
     );
 };
@@ -49,24 +52,24 @@ const Search = ({ searchTerm, onSearch }) => {
     );
 };
 
-const List = (props) => {
+const List = ({ list }) => {
     console.log('List renders');
 
     return (
         <ul>
-            {props.list.map((item) => (
+            {list.map((item) => (
                 <Item key={item.objectID} item={item} />
             ))}
         </ul>
     );
 };
 
-const Item = (props) => {
+const Item = ({ item }) => {
     console.log('Item renders');
 
     return (
         <li>
-            <a href={props.item.url}>{props.item.title}</a>
+            <a href={item.url}>{item.title}</a> by {item.author} ({item.num_comments} comments, {item.points} points)
         </li>
     );
 };
