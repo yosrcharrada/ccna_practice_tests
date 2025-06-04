@@ -21,12 +21,18 @@ const initialStories = [
 
 const App = () => {
     const [searchTerm, setSearchTerm] = useState('');
+    const [stories, setStories] = useState(initialStories);
 
     const handleSearch = (event) => {
         setSearchTerm(event.target.value);
     };
 
-    const filteredStories = initialStories.filter((story) =>
+    const handleRemoveStory = (item) => {
+        const newStories = stories.filter((story) => story.objectID !== item.objectID);
+        setStories(newStories);
+    };
+
+    const filteredStories = stories.filter((story) =>
         story.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -42,7 +48,7 @@ const App = () => {
             >
                 <strong>Search:</strong>
             </InputWithLabel>
-            <List list={filteredStories} />
+            <List list={filteredStories} onRemoveItem={handleRemoveStory} />
         </div>
     );
 };
@@ -65,17 +71,24 @@ const InputWithLabel = ({ id, value, type = 'text', onInputChange, isFocused, ch
     );
 };
 
-const List = ({ list }) => (
+const List = ({ list, onRemoveItem }) => (
     <ul>
         {list.map((item) => (
-            <Item key={item.objectID} item={item} />
+            <Item key={item.objectID} item={item} onRemoveItem={onRemoveItem} />
         ))}
     </ul>
 );
 
-const Item = ({ item }) => (
+const Item = ({ item, onRemoveItem }) => (
     <li>
-        <a href={item.url}>{item.title}</a> by {item.author}
+        <span>
+            <a href={item.url}>{item.title}</a>
+        </span>
+        &nbsp;by {item.author}
+        &nbsp;
+        <button type="button" onClick={() => onRemoveItem(item)}>
+            Dismiss
+        </button>
     </li>
 );
 
