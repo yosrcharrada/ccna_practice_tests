@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 
 const App = () => {
+    console.log('App renders');
+
     const stories = [
         {
             title: 'React',
@@ -22,35 +24,51 @@ const App = () => {
 
     const [searchTerm, setSearchTerm] = useState('');
 
+    const handleSearch = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
     return (
         <div>
             <h1>My Hacker Stories</h1>
-            <Search />
+            <Search searchTerm={searchTerm} onSearch={handleSearch} />
             <p>Searching for <strong>{searchTerm}</strong></p>
             <List list={stories} />
         </div>
     );
 };
 
-const Search = () => (
-    <div>
-        <label htmlFor="search">Search: </label>
-        <input id="search" type="text" />
-    </div>
-);
+const Search = ({ searchTerm, onSearch }) => {
+    console.log('Search renders');
 
-const List = (props) => (
-    <ul>
-        {props.list.map((item) => (
-            <Item key={item.objectID} item={item} />
-        ))}
-    </ul>
-);
+    return (
+        <div>
+            <label htmlFor="search">Search: </label>
+            <input id="search" type="text" value={searchTerm} onChange={onSearch} />
+        </div>
+    );
+};
 
-const Item = (props) => (
-    <li>
-        <a href={props.item.url}>{props.item.title}</a>
-    </li>
-);
+const List = (props) => {
+    console.log('List renders');
+
+    return (
+        <ul>
+            {props.list.map((item) => (
+                <Item key={item.objectID} item={item} />
+            ))}
+        </ul>
+    );
+};
+
+const Item = (props) => {
+    console.log('Item renders');
+
+    return (
+        <li>
+            <a href={props.item.url}>{props.item.title}</a>
+        </li>
+    );
+};
 
 export default App;
