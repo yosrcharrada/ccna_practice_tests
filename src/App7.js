@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const stories = [
     {
@@ -20,7 +20,13 @@ const stories = [
 ];
 
 const App = () => {
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchTerm, setSearchTerm] = useState(() => {
+        return localStorage.getItem('search') || '';
+    });
+
+    useEffect(() => {
+        localStorage.setItem('search', searchTerm);
+    }, [searchTerm]);
 
     const handleSearch = (event) => {
         setSearchTerm(event.target.value);
