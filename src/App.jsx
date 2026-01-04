@@ -1,5 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import './App.css';
+
+// Constants
+const EXAM_DURATION_SECONDS = 1800; // 30 minutes
+const PASSING_SCORE_PERCENTAGE = 70;
 
 // Sample CCNA exam questions
 const examQuestions = [
@@ -95,7 +99,11 @@ const App = () => {
   const [answers, setAnswers] = useState({});
   const [examStarted, setExamStarted] = useState(false);
   const [examSubmitted, setExamSubmitted] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState(1800); // 30 minutes
+  const [timeRemaining, setTimeRemaining] = useState(EXAM_DURATION_SECONDS);
+
+  const handleSubmitExam = useCallback(() => {
+    setExamSubmitted(true);
+  }, []);
 
   useEffect(() => {
     if (examStarted && !examSubmitted && timeRemaining > 0) {
@@ -107,7 +115,7 @@ const App = () => {
     if (timeRemaining === 0 && examStarted && !examSubmitted) {
       handleSubmitExam();
     }
-  }, [examStarted, examSubmitted, timeRemaining]);
+  }, [examStarted, examSubmitted, timeRemaining, handleSubmitExam]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -140,11 +148,7 @@ const App = () => {
     setAnswers({});
     setCurrentQuestion(0);
     setExamSubmitted(false);
-    setTimeRemaining(1800);
-  };
-
-  const handleSubmitExam = () => {
-    setExamSubmitted(true);
+    setTimeRemaining(EXAM_DURATION_SECONDS);
   };
 
   const calculateScore = () => {
@@ -169,7 +173,7 @@ const App = () => {
           <div className="exam-info">
             <p><strong>Number of Questions:</strong> {examQuestions.length}</p>
             <p><strong>Time Limit:</strong> 30 minutes</p>
-            <p><strong>Passing Score:</strong> 70%</p>
+            <p><strong>Passing Score:</strong> {PASSING_SCORE_PERCENTAGE}%</p>
           </div>
           <button className="start-button" onClick={handleStartExam}>
             Start Exam
@@ -181,7 +185,7 @@ const App = () => {
 
   if (examSubmitted) {
     const score = calculateScore();
-    const passed = score.percentage >= 70;
+    const passed = score.percentage >= PASSING_SCORE_PERCENTAGE;
 
     return (
       <div className="results-screen">
