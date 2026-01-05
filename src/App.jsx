@@ -317,9 +317,15 @@ const App = () => {
       questions = examBanks[selectedExamBank] || [];
     }
     
-    // If no questions available, use default questions
+    // If no questions available in selected bank, use default questions as fallback
     if (questions.length === 0) {
       questions = examQuestions;
+    }
+    
+    // Ensure we have at least one question before starting
+    if (questions.length === 0) {
+      alert('No questions available. Please add questions to the exam bank.');
+      return;
     }
     
     setCurrentExamQuestions(questions);

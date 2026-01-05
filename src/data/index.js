@@ -23,7 +23,18 @@ export const getRandomExam = (numberOfQuestions = 10) => {
     ...customExamQuestions
   ];
   
-  // Shuffle and return specified number of questions
-  const shuffled = allQuestions.sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, numberOfQuestions);
+  // Return empty array if no questions available
+  if (allQuestions.length === 0) {
+    return [];
+  }
+  
+  // Fisher-Yates shuffle algorithm for proper randomization
+  const shuffled = [...allQuestions];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  
+  // Return up to numberOfQuestions, but not more than available
+  return shuffled.slice(0, Math.min(numberOfQuestions, shuffled.length));
 };
