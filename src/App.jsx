@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import './App.css';
+import { examBanks, getRandomExam } from './data';
 
 // Constants
 const EXAM_DURATION_SECONDS = 1800; // 30 minutes
@@ -199,6 +200,8 @@ const App = () => {
   const [showAnswer, setShowAnswer] = useState(false);
   const [showGradeModal, setShowGradeModal] = useState(false);
   const [currentView, setCurrentView] = useState('exam'); // 'exam', 'results', 'review'
+  const [selectedExamBank, setSelectedExamBank] = useState('examA');
+  const [currentExamQuestions, setCurrentExamQuestions] = useState(examQuestions);
 
   const handleSubmitExam = useCallback(() => {
     setExamSubmitted(true);
@@ -206,7 +209,7 @@ const App = () => {
   }, []);
 
   const handleToggleMarkForReview = () => {
-    const questionId = examQuestions[currentQuestion].id;
+    const questionId = currentExamQuestions[currentQuestion].id;
     setMarkedForReview(prev => ({
       ...prev,
       [questionId]: !prev[questionId]
@@ -242,7 +245,7 @@ const App = () => {
     if (Object.keys(answers).length === 0) return 0;
     let correct = 0;
     Object.keys(answers).forEach((questionId) => {
-      const question = examQuestions.find(q => q.id === parseInt(questionId));
+      const question = currentExamQuestions.find(q => q.id === parseInt(questionId));
       if (question && answers[questionId] === question.correctAnswer) {
         correct++;
       }
@@ -287,7 +290,7 @@ const App = () => {
   };
 
   const handleNextQuestion = () => {
-    if (currentQuestion < examQuestions.length - 1) {
+    if (currentQuestion < currentExamQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setShowAnswer(false);
     }
@@ -306,6 +309,20 @@ const App = () => {
   };
 
   const handleStartExam = () => {
+    // Load questions based on selected exam bank
+    let questions;
+    if (selectedExamBank === 'random') {
+      questions = getRandomExam(10); // Get 10 random questions
+    } else {
+      questions = examBanks[selectedExamBank] || [];
+    }
+    
+    // If no questions available, use default questions
+    if (questions.length === 0) {
+      questions = examQuestions;
+    }
+    
+    setCurrentExamQuestions(questions);
     setExamStarted(true);
     setAnswers({});
     setCurrentQuestion(0);
@@ -318,34 +335,156 @@ const App = () => {
 
   const calculateScore = () => {
     let correct = 0;
-    examQuestions.forEach((q) => {
+    currentExamQuestions.forEach((q) => {
       if (answers[q.id] === q.correctAnswer) {
         correct++;
       }
     });
-    const percentage = ((correct / examQuestions.length) * 100).toFixed(1);
-    const points = Math.round((correct / examQuestions.length) * 1000);
+    const percentage = ((correct / currentExamQuestions.length) * 100).toFixed(1);
+    const points = Math.round((correct / currentExamQuestions.length) * 1000);
     return {
       correct,
-      total: examQuestions.length,
+      total: currentExamQuestions.length,
       percentage,
       points
     };
   };
 
+  const getExamBankDisplayName = (bankKey) => {
+    const names = {
+      'examA': 'Exam A',
+      'examB': 'Exam B',
+      'examC': 'Exam C',
+      'examD': 'Exam D',
+      'custom': 'Custom Exam',
+      'random': 'Random Exam'
+    };
+    return names[bankKey] || bankKey;
+  };
+
+  const getQuestionCount = (bankKey) => {
+    if (bankKey === 'random') {
+      return 10;
+    }
+    const bank = examBanks[bankKey];
+    return bank ? bank.length : 0;
+  };
+
   if (!examStarted) {
     return (
       <div className="start-screen">
-        <div className="start-container">
+        <div className="start-container-wide">
           <h1>CCNA Exam Practice</h1>
-          <div className="exam-info">
-            <p><strong>Number of Questions:</strong> {examQuestions.length}</p>
-            <p><strong>Time Limit:</strong> 30 minutes</p>
-            <p><strong>Passing Score:</strong> {PASSING_SCORE_PERCENTAGE}%</p>
+          
+          <div className="start-content">
+            <div className="start-left-panel">
+              <div className="exam-bank-section">
+                <h3>
+                  Exam Bank 
+                  <span className="help-icon" title="Select which exam bank to use">?</span>
+                </h3>
+                <div className="exam-bank-options">
+                  <label className="exam-bank-option">
+                    <input
+                      type="radio"
+                      name="examBank"
+                      value="examA"
+                      checked={selectedExamBank === 'examA'}
+                      onChange={(e) => setSelectedExamBank(e.target.value)}
+                    />
+                    <span>Exam A</span>
+                  </label>
+                  <label className="exam-bank-option">
+                    <input
+                      type="radio"
+                      name="examBank"
+                      value="examB"
+                      checked={selectedExamBank === 'examB'}
+                      onChange={(e) => setSelectedExamBank(e.target.value)}
+                    />
+                    <span>Exam B</span>
+                  </label>
+                  <label className="exam-bank-option">
+                    <input
+                      type="radio"
+                      name="examBank"
+                      value="examC"
+                      checked={selectedExamBank === 'examC'}
+                      onChange={(e) => setSelectedExamBank(e.target.value)}
+                    />
+                    <span>Exam C</span>
+                  </label>
+                  <label className="exam-bank-option">
+                    <input
+                      type="radio"
+                      name="examBank"
+                      value="examD"
+                      checked={selectedExamBank === 'examD'}
+                      onChange={(e) => setSelectedExamBank(e.target.value)}
+                    />
+                    <span>Exam D</span>
+                  </label>
+                  <label className="exam-bank-option">
+                    <input
+                      type="radio"
+                      name="examBank"
+                      value="custom"
+                      checked={selectedExamBank === 'custom'}
+                      onChange={(e) => setSelectedExamBank(e.target.value)}
+                    />
+                    <span>Custom Exam</span>
+                  </label>
+                  <label className="exam-bank-option">
+                    <input
+                      type="radio"
+                      name="examBank"
+                      value="random"
+                      checked={selectedExamBank === 'random'}
+                      onChange={(e) => setSelectedExamBank(e.target.value)}
+                    />
+                    <span>Random Exam</span>
+                  </label>
+                </div>
+              </div>
+              
+              <div className="exam-mode-section">
+                <h3>
+                  Exam Mode 
+                  <span className="help-icon" title="Select exam mode">?</span>
+                </h3>
+                <div className="exam-mode-buttons">
+                  <button className="mode-button active">Study Mode</button>
+                  <button className="mode-button">Simulation Mode</button>
+                </div>
+              </div>
+            </div>
+            
+            <div className="start-right-panel">
+              <div className="exam-settings-panel">
+                <div className="settings-header">
+                  <h3>
+                    Current Exam Settings 
+                    <span className="help-icon" title="Current exam settings">?</span>
+                  </h3>
+                  <button className="modify-settings-btn">Modify Settings</button>
+                </div>
+                <div className="settings-list">
+                  <p>✓ Exam is in Study mode</p>
+                  <p>✓ Questions are randomized</p>
+                  <p>✓ Answers are randomized</p>
+                  <p>✓ Exam is not timed</p>
+                  <p>✓ Show answers inline</p>
+                  <p>✓ Show live scoring</p>
+                  <p>✓ Always show number of correct answers</p>
+                  <p>✓ This exam has {getQuestionCount(selectedExamBank)} questions</p>
+                </div>
+              </div>
+              
+              <button className="start-button" onClick={handleStartExam}>
+                Begin Exam
+              </button>
+            </div>
           </div>
-          <button className="start-button" onClick={handleStartExam}>
-            Start Exam
-          </button>
         </div>
       </div>
     );
@@ -373,7 +512,7 @@ const App = () => {
             <div className="result-info">
               <p>Passing Score: 825/1000</p>
               <p>Exam Mode: Study Mode</p>
-              <p>Exam Bank: Exam A</p>
+              <p>Exam Bank: {getExamBankDisplayName(selectedExamBank)}</p>
             </div>
           </div>
 
@@ -430,7 +569,7 @@ const App = () => {
           </div>
 
           <div className="question-cards">
-            {examQuestions.map((q, index) => {
+            {currentExamQuestions.map((q, index) => {
               const userAnswer = answers[q.id];
               const isCorrect = userAnswer === q.correctAnswer;
               const isFlagged = markedForReview[q.id];
@@ -469,7 +608,7 @@ const App = () => {
     );
   }
 
-  const question = examQuestions[currentQuestion];
+  const question = currentExamQuestions[currentQuestion];
   const selectedAnswer = answers[question.id];
   const isQuestionMarked = markedForReview[question.id];
   const isAnswerCorrect = selectedAnswer !== undefined && selectedAnswer === question.correctAnswer;
@@ -495,7 +634,7 @@ const App = () => {
         <aside className="question-navigator">
           <h3>Questions</h3>
           <div className="question-grid">
-            {examQuestions.map((q, index) => (
+            {currentExamQuestions.map((q, index) => (
               <button
                 key={q.id}
                 className={`question-number-btn ${
@@ -508,14 +647,14 @@ const App = () => {
             ))}
           </div>
           <div className="progress-info">
-            <p>Answered: {Object.keys(answers).length} / {examQuestions.length}</p>
+            <p>Answered: {Object.keys(answers).length} / {currentExamQuestions.length}</p>
           </div>
         </aside>
 
         <main className="question-section">
           <div className="question-header">
             <span className="question-counter">
-              Question {currentQuestion + 1} of {examQuestions.length}
+              Question {currentQuestion + 1} of {currentExamQuestions.length}
               <span className="percentage-correct">{currentPercentage}% correct</span>
             </span>
             <button 
@@ -606,7 +745,7 @@ const App = () => {
               <button
                 className="nav-button next"
                 onClick={handleNextQuestion}
-                disabled={currentQuestion === examQuestions.length - 1}
+                disabled={currentQuestion === currentExamQuestions.length - 1}
               >
                 Next →
               </button>
