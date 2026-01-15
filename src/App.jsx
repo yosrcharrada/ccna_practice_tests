@@ -26,26 +26,7 @@ const App = () => {
   const [matchingAnswers, setMatchingAnswers] = useState({});
   const [selectedTerm, setSelectedTerm] = useState(null);
 
-  const handleSubmitExam = useCallback(() => {
-    setExamSubmitted(true);
-    setCurrentView('results');
-    
-    // Calculate and save score to history
-    const score = calculateScoreForSubmission();
-    const examName = getExamBankDisplayName(selectedExamBank);
-    const scoreData = {
-      score: score.percentage,
-      points: score.points,
-      examName: examName,
-      totalQuestions: score.total,
-      correctAnswers: score.correct,
-      passed: score.points >= 825,
-      dateTime: new Date().toISOString()
-    };
-    saveScore(scoreData);
-  }, [selectedExamBank, currentExamQuestions, answers, matchingAnswers]);
-
-  const calculateScoreForSubmission = () => {
+  const calculateScoreForSubmission = useCallback(() => {
     let correct = 0;
     currentExamQuestions.forEach((q) => {
       const userAnswer = answers[q.id];
@@ -80,7 +61,26 @@ const App = () => {
       percentage,
       points
     };
-  };
+  }, [currentExamQuestions, answers, matchingAnswers]);
+
+  const handleSubmitExam = useCallback(() => {
+    setExamSubmitted(true);
+    setCurrentView('results');
+    
+    // Calculate and save score to history
+    const score = calculateScoreForSubmission();
+    const examName = getExamBankDisplayName(selectedExamBank);
+    const scoreData = {
+      score: score.percentage,
+      points: score.points,
+      examName: examName,
+      totalQuestions: score.total,
+      correctAnswers: score.correct,
+      passed: score.points >= 825,
+      dateTime: new Date().toISOString()
+    };
+    saveScore(scoreData);
+  }, [selectedExamBank, calculateScoreForSubmission]);
 
   const handleToggleMarkForReview = () => {
     const questionId = currentExamQuestions[currentQuestion]. id;

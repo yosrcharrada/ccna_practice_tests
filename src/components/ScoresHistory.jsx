@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import './ScoresHistory.css';
 import {
   getScoresHistory,
@@ -196,6 +197,10 @@ const ScoresHistory = ({ onBack }) => {
       )}
     </div>
   );
+};
+
+ScoresHistory.propTypes = {
+  onBack: PropTypes.func.isRequired
 };
 
 export default ScoresHistory;
