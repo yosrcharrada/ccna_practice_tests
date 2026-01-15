@@ -1,0 +1,27 @@
+
+C:\Users\yosrc\cs220-react-project-charradamohamed>npm run dev
+
+
+********************************************************************************************************************************
+
+  {
+  id: ,  // Question ID number
+  category: "",  // Category name
+  questionType: "Single-select",
+  question: ``,  // Question text (use `` for multi-line, add <p> tags if needed)
+  options: [
+    "",  // Option A (index 0)
+    "",  // Option B (index 1)
+    "",  // Option C (index 2)
+    ""   // Option D (index 3)
+  ],
+  correctAnswer: 0,  // Index of correct answer (0, 1, 2, or 3)
+  explanation: `<p></p>`,  // Explanation (wrap paragraphs in <p></p> tags)
+  reference: [
+    {
+      title: "",
+      description: ""
+    }
+    // Add more references if needed with a comma before this
+  ]
+},

@@ -1,194 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import './App.css';
+import './Matching.css';  // ← Add this line
 import { examBanks, getRandomExam } from './data';
 
 // Constants
 const EXAM_DURATION_SECONDS = 1800; // 30 minutes
 const PASSING_SCORE_PERCENTAGE = 70;
-
-// Sample CCNA exam questions
-const examQuestions = [
-  {
-    id: 1363,
-    question: "What is the default administrative distance for OSPF?",
-    options: ["90", "100", "110", "120"],
-    correctAnswer: 2,
-    category: "Network Fundamentals",
-    questionType: "Single-select",
-    explanation: "OSPF (Open Shortest Path First) has an administrative distance of 110. Administrative distance is a measure of the trustworthiness of a routing information source. Lower values are preferred. OSPF's AD of 110 makes it more trusted than RIP (120) but less trusted than EIGRP (90) and directly connected routes (0).",
-    reference: [
-      {
-        title: "CCNA 200-301 Official Cert Guide, Volume 1",
-        description: "Chapter 18: Configuring IPv4 Routing Protocols",
-        link: null
-      },
-      {
-        title: "Cisco Documentation",
-        description: "Administrative Distance",
-        link: "https://www.cisco.com/c/en/us/support/docs/ip/border-gateway-protocol-bgp/15986-admin-distance.html"
-      }
-    ]
-  },
-  {
-    id: 1405,
-    question: "Which command is used to configure a router interface with an IP address?",
-    options: [
-      "ip address [address] [subnet mask]",
-      "set ip [address] [subnet mask]",
-      "interface ip [address] [subnet mask]",
-      "config ip [address] [subnet mask]"
-    ],
-    correctAnswer: 0,
-    category: "IP Connectivity",
-    questionType: "Single-select",
-    explanation: "The command 'ip address [address] [subnet mask]' is used in interface configuration mode to assign an IP address to a router interface. You must first enter the interface configuration mode using 'interface [type] [number]', then use this command. For example: 'ip address 192.168.1.1 255.255.255.0'.",
-    reference: [
-      {
-        title: "CCNA 200-301 Official Cert Guide, Volume 1",
-        description: "Chapter 16: Configuring IPv4 Addresses and Static Routes",
-        link: null
-      }
-    ]
-  },
-  {
-    id: 1447,
-    question: "What type of cable is used to connect two switches directly?",
-    options: ["Straight-through cable", "Crossover cable", "Rollover cable", "Serial cable"],
-    correctAnswer: 1,
-    category: "Network Fundamentals",
-    questionType: "Single-select",
-    explanation: "A crossover cable is traditionally used to connect similar devices like switch to switch or router to router. In a crossover cable, the transmit pins on one end connect to the receive pins on the other end. However, modern switches often support Auto-MDIX (Automatic Medium-Dependent Interface Crossover), which allows the use of straight-through cables as well.",
-    reference: [
-      {
-        title: "CCNA 200-301 Official Cert Guide, Volume 1",
-        description: "Chapter 2: Fundamentals of Ethernet LANs",
-        link: null
-      }
-    ]
-  },
-  {
-    id: 1489,
-    question: "Which layer of the OSI model is responsible for logical addressing?",
-    options: ["Layer 2 - Data Link", "Layer 3 - Network", "Layer 4 - Transport", "Layer 5 - Session"],
-    correctAnswer: 1,
-    category: "Network Fundamentals",
-    questionType: "Single-select",
-    explanation: "The Network layer (Layer 3) handles logical addressing using IP addresses. This layer is responsible for packet forwarding, routing, and providing logical addressing that allows communication between different networks. Layer 2 handles physical addressing (MAC addresses), while Layer 4 handles port numbers for application identification.",
-    reference: [
-      {
-        title: "CCNA 200-301 Official Cert Guide, Volume 1",
-        description: "Chapter 1: Introduction to TCP/IP Networking",
-        link: null
-      }
-    ]
-  },
-  {
-    id: 1521,
-    question: "What is the purpose of VLAN?",
-    options: [
-      "To increase network speed",
-      "To segment broadcast domains",
-      "To provide wireless connectivity",
-      "To encrypt network traffic"
-    ],
-    correctAnswer: 1,
-    category: "Network Access",
-    questionType: "Single-select",
-    explanation: "VLANs (Virtual Local Area Networks) are used to segment broadcast domains and improve network organization and security. By creating VLANs, you can logically group devices regardless of their physical location, reduce broadcast traffic, improve security by isolating sensitive traffic, and make network management more flexible.",
-    reference: [
-      {
-        title: "CCNA 200-301 Official Cert Guide, Volume 1",
-        description: "Chapter 11: Implementing Ethernet Virtual LANs",
-        link: null
-      }
-    ]
-  },
-  {
-    id: 1563,
-    question: "Which routing protocol uses bandwidth and delay as default metrics?",
-    options: ["RIP", "OSPF", "EIGRP", "BGP"],
-    correctAnswer: 2,
-    category: "IP Connectivity",
-    questionType: "Single-select",
-    explanation: "EIGRP (Enhanced Interior Gateway Routing Protocol) uses bandwidth and delay as its default metrics for route selection. EIGRP calculates a composite metric based on these values, though it can also consider reliability, load, and MTU. RIP uses hop count, OSPF uses cost (based on bandwidth), and BGP uses path attributes.",
-    reference: [
-      {
-        title: "CCNA 200-301 Official Cert Guide, Volume 2",
-        description: "Chapter 8: Implementing EIGRP",
-        link: null
-      }
-    ]
-  },
-  {
-    id: 1605,
-    question: "What is the maximum number of usable host addresses in a /26 network?",
-    options: ["30", "62", "126", "254"],
-    correctAnswer: 1,
-    category: "IP Services",
-    questionType: "Single-select",
-    explanation: "A /26 network has 64 total addresses (2^6 = 64), minus 2 (network address and broadcast address) = 62 usable host addresses. The /26 notation indicates that 26 bits are used for the network portion, leaving 6 bits for hosts. Network address is the first address, broadcast is the last, and the addresses in between are usable for hosts.",
-    reference: [
-      {
-        title: "CCNA 200-301 Official Cert Guide, Volume 1",
-        description: "Chapter 13: Analyzing Subnet Masks",
-        link: null
-      }
-    ]
-  },
-  {
-    id: 1647,
-    question: "Which command displays the routing table on a Cisco router?",
-    options: ["show routes", "show ip route", "display routing-table", "show routing"],
-    correctAnswer: 1,
-    category: "IP Connectivity",
-    questionType: "Single-select",
-    explanation: "The command 'show ip route' displays the IP routing table on Cisco routers. This command shows all known routes including directly connected networks, static routes, and dynamically learned routes from routing protocols. The output includes the route source, destination network, administrative distance, metric, next-hop address, and outgoing interface.",
-    reference: [
-      {
-        title: "CCNA 200-301 Official Cert Guide, Volume 1",
-        description: "Chapter 16: Configuring IPv4 Addresses and Static Routes",
-        link: null
-      }
-    ]
-  },
-  {
-    id: 1689,
-    question: "What does NAT stand for?",
-    options: [
-      "Network Address Translation",
-      "Network Access Technology",
-      "Node Address Transfer",
-      "Network Authentication Token"
-    ],
-    correctAnswer: 0,
-    category: "IP Services",
-    questionType: "Single-select",
-    explanation: "NAT stands for Network Address Translation, used to translate private IP addresses to public ones. NAT is commonly used to allow multiple devices on a private network to share a single public IP address for Internet access. It also provides a layer of security by hiding internal IP addresses from the external network.",
-    reference: [
-      {
-        title: "CCNA 200-301 Official Cert Guide, Volume 2",
-        description: "Chapter 10: Network Address Translation",
-        link: null
-      }
-    ]
-  },
-  {
-    id: 1731,
-    question: "Which protocol operates at the Transport layer and provides reliable, connection-oriented service?",
-    options: ["UDP", "TCP", "IP", "ICMP"],
-    correctAnswer: 1,
-    category: "Network Fundamentals",
-    questionType: "Single-select",
-    explanation: "TCP (Transmission Control Protocol) provides reliable, connection-oriented service at the Transport layer. TCP ensures reliable delivery through acknowledgments, retransmissions, flow control, and sequencing. It establishes a connection using a three-way handshake before data transfer and guarantees that data arrives in order and without errors. UDP, in contrast, is connectionless and unreliable but faster.",
-    reference: [
-      {
-        title: "CCNA 200-301 Official Cert Guide, Volume 1",
-        description: "Chapter 6: TCP/IP Transport Layer",
-        link: null
-      }
-    ]
-  }
-];
 
 const App = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -201,7 +18,11 @@ const App = () => {
   const [showGradeModal, setShowGradeModal] = useState(false);
   const [currentView, setCurrentView] = useState('exam'); // 'exam', 'results', 'review'
   const [selectedExamBank, setSelectedExamBank] = useState('examA');
-  const [currentExamQuestions, setCurrentExamQuestions] = useState(examQuestions);
+  const [currentExamQuestions, setCurrentExamQuestions] = useState([]);
+
+  // Matching question state
+  const [matchingAnswers, setMatchingAnswers] = useState({});
+  const [selectedTerm, setSelectedTerm] = useState(null);
 
   const handleSubmitExam = useCallback(() => {
     setExamSubmitted(true);
@@ -209,7 +30,7 @@ const App = () => {
   }, []);
 
   const handleToggleMarkForReview = () => {
-    const questionId = currentExamQuestions[currentQuestion].id;
+    const questionId = currentExamQuestions[currentQuestion]. id;
     setMarkedForReview(prev => ({
       ...prev,
       [questionId]: !prev[questionId]
@@ -246,8 +67,29 @@ const App = () => {
     let correct = 0;
     Object.keys(answers).forEach((questionId) => {
       const question = currentExamQuestions.find(q => q.id === parseInt(questionId));
-      if (question && answers[questionId] === question.correctAnswer) {
-        correct++;
+      if (question) {
+        const userAnswer = answers[questionId];
+        const correctAnswer = question.correctAnswer;
+        
+        if (question.questionType === "Multi-select") {
+          const sortedUser = Array.isArray(userAnswer) ? [...userAnswer]. sort() : [];
+          const sortedCorrect = Array.isArray(correctAnswer) ? [...correctAnswer].sort() : [];
+          
+          if (JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect)) {
+            correct++;
+          }
+        } else if (question.questionType === "Matching") {
+          const userMatches = matchingAnswers[questionId] || {};
+          const correctMatches = question.correctAnswer;
+          
+          if (JSON. stringify(userMatches) === JSON.stringify(correctMatches)) {
+            correct++;
+          }
+        } else {
+          if (userAnswer === correctAnswer) {
+            correct++;
+          }
+        }
       }
     });
     return ((correct / Object.keys(answers).length) * 100).toFixed(1);
@@ -286,13 +128,70 @@ const App = () => {
   };
 
   const handleAnswerSelect = (questionId, answerIndex) => {
-    setAnswers({ ...answers, [questionId]: answerIndex });
+    const question = currentExamQuestions.find(q => q.id === questionId);
+    
+    if (question. questionType === "Multi-select") {
+      // Handle multi-select
+      const currentAnswers = answers[questionId] || [];
+      let newAnswers;
+      
+      if (currentAnswers.includes(answerIndex)) {
+        // Remove if already selected
+        newAnswers = currentAnswers.filter(idx => idx !== answerIndex);
+      } else {
+        // Add to selection
+        newAnswers = [... currentAnswers, answerIndex];
+      }
+      
+      setAnswers({ ...answers, [questionId]: newAnswers });
+    } else {
+      // Handle single-select
+      setAnswers({ ... answers, [questionId]: answerIndex });
+    }
+  };
+
+  // Handle matching question interactions
+  const handleMatchingSelect = (questionId, termId, defId) => {
+    if (! termId && !defId) return;
+
+    const currentMatches = matchingAnswers[questionId] || {};
+
+    if (termId && ! selectedTerm) {
+      // Select a term
+      setSelectedTerm(termId);
+    } else if (defId && selectedTerm) {
+      // Match the selected term with this definition
+      const newMatches = { ...currentMatches, [selectedTerm]: defId };
+      setMatchingAnswers({ ...matchingAnswers, [questionId]: newMatches });
+      setAnswers({ ...answers, [questionId]: true }); // Mark as answered
+      setSelectedTerm(null);
+    } else if (termId && selectedTerm === termId) {
+      // Deselect if clicking the same term again
+      setSelectedTerm(null);
+    } else if (termId && selectedTerm) {
+      // Switch to different term
+      setSelectedTerm(termId);
+    }
+  };
+
+  const handleClearMatching = (questionId, termId) => {
+    const currentMatches = matchingAnswers[questionId] || {};
+    const newMatches = { ...currentMatches };
+    delete newMatches[termId];
+    setMatchingAnswers({ ... matchingAnswers, [questionId]: newMatches });
+    
+    if (Object.keys(newMatches).length === 0) {
+      const newAnswers = { ...answers };
+      delete newAnswers[questionId];
+      setAnswers(newAnswers);
+    }
   };
 
   const handleNextQuestion = () => {
     if (currentQuestion < currentExamQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setShowAnswer(false);
+      setSelectedTerm(null);
     }
   };
 
@@ -300,12 +199,14 @@ const App = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1);
       setShowAnswer(false);
+      setSelectedTerm(null);
     }
   };
 
   const handleQuestionJump = (index) => {
     setCurrentQuestion(index);
     setShowAnswer(false);
+    setSelectedTerm(null);
   };
 
   const handleStartExam = () => {
@@ -317,35 +218,55 @@ const App = () => {
       questions = examBanks[selectedExamBank] || [];
     }
     
-    // If no questions available in selected bank, use default questions as fallback
-    if (questions.length === 0) {
-      questions = examQuestions;
-    }
-    
     // Ensure we have at least one question before starting
     if (questions.length === 0) {
-      alert('No questions available. Please add questions to the exam bank.');
+      alert('No questions available.  Please add questions to the exam bank.');
       return;
     }
     
     setCurrentExamQuestions(questions);
     setExamStarted(true);
     setAnswers({});
+    setMatchingAnswers({});
     setCurrentQuestion(0);
     setExamSubmitted(false);
     setTimeRemaining(EXAM_DURATION_SECONDS);
     setMarkedForReview({});
     setShowAnswer(false);
     setCurrentView('exam');
+    setSelectedTerm(null);
   };
 
   const calculateScore = () => {
     let correct = 0;
     currentExamQuestions.forEach((q) => {
-      if (answers[q.id] === q.correctAnswer) {
-        correct++;
+      const userAnswer = answers[q.id];
+      const correctAnswer = q.correctAnswer;
+      
+      if (q.questionType === "Multi-select") {
+        // For multi-select, check if arrays match
+        const sortedUser = Array.isArray(userAnswer) ? [...userAnswer].sort() : [];
+        const sortedCorrect = Array.isArray(correctAnswer) ? [...correctAnswer].sort() : [];
+        
+        if (JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect)) {
+          correct++;
+        }
+      } else if (q.questionType === "Matching") {
+        // For matching, check if all pairs match
+        const userMatches = matchingAnswers[q.id] || {};
+        const correctMatches = q.correctAnswer;
+        
+        if (JSON.stringify(userMatches) === JSON.stringify(correctMatches)) {
+          correct++;
+        }
+      } else {
+        // For single-select
+        if (userAnswer === correctAnswer) {
+          correct++;
+        }
       }
     });
+    
     const percentage = ((correct / currentExamQuestions.length) * 100).toFixed(1);
     const points = Math.round((correct / currentExamQuestions.length) * 1000);
     return {
@@ -358,9 +279,9 @@ const App = () => {
 
   const getExamBankDisplayName = (bankKey) => {
     const names = {
-      'examA': 'Exam A',
+      'examA':  'Exam A',
       'examB': 'Exam B',
-      'examC': 'Exam C',
+      'examC':  'Exam C',
       'examD': 'Exam D',
       'custom': 'Custom Exam',
       'random': 'Random Exam'
@@ -376,7 +297,7 @@ const App = () => {
     return bank ? bank.length : 0;
   };
 
-  if (!examStarted) {
+  if (! examStarted) {
     return (
       <div className="start-screen">
         <div className="start-container-wide">
@@ -387,7 +308,7 @@ const App = () => {
               <div className="exam-bank-section">
                 <h3>
                   Exam Bank 
-                  <span className="help-icon" title="Select which exam bank to use">?</span>
+                  <span className="help-icon" title="Select which exam bank to use">? </span>
                 </h3>
                 <div className="exam-bank-options">
                   <label className="exam-bank-option">
@@ -416,7 +337,7 @@ const App = () => {
                       name="examBank"
                       value="examC"
                       checked={selectedExamBank === 'examC'}
-                      onChange={(e) => setSelectedExamBank(e.target.value)}
+                      onChange={(e) => setSelectedExamBank(e.target. value)}
                     />
                     <span>Exam C</span>
                   </label>
@@ -426,7 +347,7 @@ const App = () => {
                       name="examBank"
                       value="examD"
                       checked={selectedExamBank === 'examD'}
-                      onChange={(e) => setSelectedExamBank(e.target.value)}
+                      onChange={(e) => setSelectedExamBank(e. target.value)}
                     />
                     <span>Exam D</span>
                   </label>
@@ -436,7 +357,7 @@ const App = () => {
                       name="examBank"
                       value="custom"
                       checked={selectedExamBank === 'custom'}
-                      onChange={(e) => setSelectedExamBank(e.target.value)}
+                      onChange={(e) => setSelectedExamBank(e. target.value)}
                     />
                     <span>Custom Exam</span>
                   </label>
@@ -446,7 +367,7 @@ const App = () => {
                       name="examBank"
                       value="random"
                       checked={selectedExamBank === 'random'}
-                      onChange={(e) => setSelectedExamBank(e.target.value)}
+                      onChange={(e) => setSelectedExamBank(e. target.value)}
                     />
                     <span>Random Exam</span>
                   </label>
@@ -531,9 +452,9 @@ const App = () => {
               <div className="progress-bar-background">
                 <div 
                   className="progress-bar-fill" 
-                  style={{ width: `${(score.points / 1000) * 100}%` }}
+                  style={{ width:  `${(score.points / 1000) * 100}%` }}
                 ></div>
-                <div className="passing-marker" style={{ left: '82.5%' }}></div>
+                <div className="passing-marker" style={{ left: '82. 5%' }}></div>
               </div>
             </div>
             <div className="progress-bar-labels">
@@ -577,14 +498,28 @@ const App = () => {
           <div className="question-cards">
             {currentExamQuestions.map((q, index) => {
               const userAnswer = answers[q.id];
-              const isCorrect = userAnswer === q.correctAnswer;
+              const correctAnswer = q. correctAnswer;
+              let isCorrect = false;
+              
+              if (q.questionType === "Multi-select") {
+                const sortedUser = Array.isArray(userAnswer) ? [...userAnswer].sort() : [];
+                const sortedCorrect = Array.isArray(correctAnswer) ? [...correctAnswer].sort() : [];
+                isCorrect = JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
+              } else if (q.questionType === "Matching") {
+                const userMatches = matchingAnswers[q.id] || {};
+                const correctMatches = q. correctAnswer;
+                isCorrect = JSON.stringify(userMatches) === JSON.stringify(correctMatches);
+              } else {
+                isCorrect = userAnswer === correctAnswer;
+              }
+              
               const isFlagged = markedForReview[q.id];
               
               return (
                 <div key={q.id} className="question-card">
                   <div className="card-header">
                     <div className="card-left">
-                      <span className={`flag-icon ${isFlagged ? 'flagged' : ''}`}>🚩</span>
+                      <span className={`flag-icon ${isFlagged ? 'flagged' :  ''}`}>🚩</span>
                       <span className={`status-icon ${isCorrect ? 'correct' : 'incorrect'}`}>
                         {isCorrect ? '●' : '○'}
                       </span>
@@ -599,7 +534,7 @@ const App = () => {
                     <div className="card-meta">
                       <span>{q.id} - {q.questionType}</span>
                       <span className={`card-result ${isCorrect ? 'correct' : 'incorrect'}`}>
-                        {isCorrect ? '✓ Correct' : '✗ Incorrect'}
+                        {isCorrect ?  '✓ Correct' : '✗ Incorrect'}
                       </span>
                     </div>
                   </div>
@@ -617,7 +552,20 @@ const App = () => {
   const question = currentExamQuestions[currentQuestion];
   const selectedAnswer = answers[question.id];
   const isQuestionMarked = markedForReview[question.id];
-  const isAnswerCorrect = selectedAnswer !== undefined && selectedAnswer === question.correctAnswer;
+  
+  let isAnswerCorrect = false;
+  if (question.questionType === "Multi-select") {
+    const sortedUser = Array.isArray(selectedAnswer) ? [...selectedAnswer].sort() : [];
+    const sortedCorrect = Array.isArray(question.correctAnswer) ? [...question.correctAnswer].sort() : [];
+    isAnswerCorrect = selectedAnswer !== undefined && JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
+  } else if (question.questionType === "Matching") {
+    const userMatches = matchingAnswers[question.id] || {};
+    const correctMatches = question.correctAnswer;
+    isAnswerCorrect = selectedAnswer !== undefined && JSON.stringify(userMatches) === JSON.stringify(correctMatches);
+  } else {
+    isAnswerCorrect = selectedAnswer !== undefined && selectedAnswer === question.correctAnswer;
+  }
+  
   const currentPercentage = calculateCurrentPercentage();
 
   return (
@@ -637,14 +585,14 @@ const App = () => {
       </header>
 
       <div className="exam-content">
-        <aside className="question-navigator">
+        {/*<aside className="question-navigator">
           <h3>Questions</h3>
           <div className="question-grid">
             {currentExamQuestions.map((q, index) => (
               <button
                 key={q.id}
                 className={`question-number-btn ${
-                  answers[q.id] !== undefined ? 'answered' : ''
+                  answers[q.id] !== undefined ?  'answered' : ''
                 } ${currentQuestion === index ? 'active' : ''}`}
                 onClick={() => handleQuestionJump(index)}
               >
@@ -655,11 +603,11 @@ const App = () => {
           <div className="progress-info">
             <p>Answered: {Object.keys(answers).length} / {currentExamQuestions.length}</p>
           </div>
-        </aside>
+        </aside>*/}
 
         <main className="question-section">
-          <div className="question-header">
-            <span className="question-counter">
+          <div className={`question-header ${isQuestionMarked ? 'flagged' :  ''}`}>
+            <span className={`question-counter ${isQuestionMarked ? 'flagged' : ''}`}>
               Question {currentQuestion + 1} of {currentExamQuestions.length}
               <span className="percentage-correct">{currentPercentage}% correct</span>
             </span>
@@ -673,56 +621,184 @@ const App = () => {
           </div>
 
           <div className="question-content">
-            <h2>{question.question}</h2>
+            <h2 dangerouslySetInnerHTML={{ __html: question.question }} />
             
-            <div className="options-list">
-              {question.options.map((option, index) => {
-                const isSelected = selectedAnswer === index;
-                const isCorrectOption = index === question.correctAnswer;
-                const shouldShowCorrect = showAnswer && isCorrectOption;
-                
-                return (
-                  <div
-                    key={index}
-                    className={`option-item ${isSelected ? 'selected' : ''} ${shouldShowCorrect ? 'correct-answer' : ''}`}
-                    onClick={() => handleAnswerSelect(question.id, index)}
-                  >
-                    <input
-                      type="radio"
-                      id={`option-${index}`}
-                      name={`question-${question.id}`}
-                      checked={isSelected}
-                      onChange={() => handleAnswerSelect(question.id, index)}
-                    />
-                    <label htmlFor={`option-${index}`}>
-                      <span className="option-letter">
-                        {String.fromCharCode(65 + index)}.
-                      </span>
-                      <span className="option-text">{option}</span>
-                    </label>
-                  </div>
-                );
-              })}
-            </div>
+            {/* Regular Single-select or Multi-select questions */}
+            {question.questionType !== "Matching" && (
+              <div className="options-list">
+                {question. options.map((option, index) => {
+                  const isMultiSelect = question.questionType === "Multi-select";
+                  const isSelected = isMultiSelect 
+                    ? (selectedAnswer || []).includes(index)
+                    : selectedAnswer === index;
+                  
+                  const correctAnswers = Array.isArray(question.correctAnswer) 
+                    ? question.correctAnswer 
+                    : [question.correctAnswer];
+                  const isCorrectOption = correctAnswers.includes(index);
+                  const shouldShowCorrect = showAnswer && isCorrectOption;
+                  
+                  return (
+                    <div
+                      key={index}
+                      className={`option-item ${isSelected ? 'selected' :  ''} ${shouldShowCorrect ? 'correct-answer' : ''}`}
+                      onClick={() => handleAnswerSelect(question. id, index)}
+                    >
+                      <input
+                        type={isMultiSelect ? "checkbox" : "radio"}
+                        id={`option-${index}`}
+                        name={`question-${question.id}`}
+                        checked={isSelected}
+                        onChange={() => handleAnswerSelect(question.id, index)}
+                      />
+                      <label htmlFor={`option-${index}`}>
+                        <span className="option-letter">
+                          {String.fromCharCode(65 + index)}.
+                        </span>
+                        <span className="option-text" dangerouslySetInnerHTML={{ __html: option }}></span>
+                      </label>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
-            {showAnswer && selectedAnswer !== undefined && (
+            {/* Matching Question Interface */}
+            {question.questionType === "Matching" && (
+              <div className="matching-container">
+                <p className="matching-instruction">
+                  Click a term on the left, then click its matching definition on the right.
+                </p>
+                
+                <div className="matching-pairs">
+                  {question.matchingPairs.terms.map((term) => {
+                    const currentMatches = matchingAnswers[question.id] || {};
+                    const matchedDefId = currentMatches[term.id];
+                    const matchedDef = question.matchingPairs.definitions. find(d => d.id === matchedDefId);
+                    const isSelected = selectedTerm === term.id;
+                    const isCorrectMatch = showAnswer && matchedDefId === question.correctAnswer[term.id];
+                    const isIncorrectMatch = showAnswer && matchedDefId && matchedDefId !== question.correctAnswer[term.id];
+                    
+                    return (
+                      <div key={term.id} className="matching-row">
+                        <div 
+                          className={`matching-term ${isSelected ? 'selected' : ''} ${isCorrectMatch ? 'correct' : ''} ${isIncorrectMatch ? 'incorrect' : ''}`}
+                          onClick={() => handleMatchingSelect(question.id, term.id, null)}
+                        >
+                          {term.text}
+                        </div>
+                        
+                        <div className="matching-connector">
+                          {matchedDef && (
+                            <div className={`matching-matched-def ${isCorrectMatch ? 'correct' : ''} ${isIncorrectMatch ? 'incorrect' : ''}`}>
+                              {matchedDef. text}
+                              <button 
+                                className="clear-match-btn"
+                                onClick={() => handleClearMatching(question.id, term.id)}
+                                title="Clear this match"
+                              >
+                                ×
+                              </button>
+                            </div>
+                          )}
+                          {! matchedDef && <div className="matching-empty">Click to match →</div>}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="matching-definitions-label">
+                  <h4>Available Definitions:</h4>
+                </div>
+                
+                <div className="matching-definitions">
+                  {question.matchingPairs.definitions.map((def) => {
+                    const currentMatches = matchingAnswers[question.id] || {};
+                    const isMatched = Object.values(currentMatches).includes(def.id);
+                    const isClickable = selectedTerm !== null && ! isMatched;
+                    const isCorrectDef = showAnswer && def.id === question.correctAnswer[selectedTerm];
+                    
+                    return (
+                      <div
+                        key={def.id}
+                        className={`matching-definition ${isMatched ? 'matched' : ''} ${isClickable ? 'clickable' : ''} ${isCorrectDef ? 'correct-hint' : ''}`}
+                        onClick={() => !isMatched && handleMatchingSelect(question.id, null, def.id)}
+                      >
+                        {def.text}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {showAnswer && (
+                  <div className="matching-correct-answers">
+                    <h4>Correct Matches:</h4>
+                    {question.matchingPairs.terms.map((term) => {
+                      const correctDefId = question.correctAnswer[term.id];
+                      const correctDef = question.matchingPairs.definitions.find(d => d.id === correctDefId);
+                      return (
+                        <div key={term.id} className="correct-match-display">
+                          <strong>{term.text}</strong> → {correctDef.text}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {showAnswer && selectedAnswer !== undefined && question.questionType !== "Matching" && (
               <div className="answer-explanation">
                 <div className={`answer-status ${isAnswerCorrect ? 'correct' : 'incorrect'}`}>
                   {isAnswerCorrect ? 'Correct' : 'Incorrect'}
                 </div>
                 <div className="correct-answer-info">
-                  <strong>Correct Answer(s):</strong> {String.fromCharCode(65 + question.correctAnswer)}
+                  <strong>Correct Answer(s):</strong> {
+                    Array.isArray(question.correctAnswer)
+                      ? question.correctAnswer.map(idx => String.fromCharCode(65 + idx)).join(', ')
+                      : String.fromCharCode(65 + question.correctAnswer)
+                  }
                 </div>
                 <div className="explanation-section">
                   <h3>Explanation</h3>
-                  <p>{question.explanation}</p>
+                  <div dangerouslySetInnerHTML={{ __html: question.explanation }} />
+                </div>
+                <div className="reference-section">
+                  <h3>Reference</h3>
+                  {question.reference. map((ref, index) => (
+                    <div key={index} className="reference-item">
+                      <p><strong>{ref.title}</strong></p>
+                      <p>{ref.description}</p>
+                      {ref.link && (
+                        <a href={ref.link} target="_blank" rel="noopener noreferrer">
+                          {ref.link}
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className="category-section">
+                  <strong>Category:</strong> {question. category}
+                </div>
+              </div>
+            )}
+
+            {showAnswer && question.questionType === "Matching" && (
+              <div className="answer-explanation">
+                <div className={`answer-status ${isAnswerCorrect ? 'correct' :  'incorrect'}`}>
+                  {isAnswerCorrect ?  'Correct' : 'Incorrect'}
+                </div>
+                <div className="explanation-section">
+                  <h3>Explanation</h3>
+                  <div dangerouslySetInnerHTML={{ __html: question.explanation }} />
                 </div>
                 <div className="reference-section">
                   <h3>Reference</h3>
                   {question.reference.map((ref, index) => (
                     <div key={index} className="reference-item">
                       <p><strong>{ref.title}</strong></p>
-                      <p>{ref.description}</p>
+                      <p>{ref. description}</p>
                       {ref.link && (
                         <a href={ref.link} target="_blank" rel="noopener noreferrer">
                           {ref.link}
@@ -781,7 +857,7 @@ const App = () => {
         <div className="modal-overlay" onClick={handleCloseGradeModal}>
           <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
             <button className="modal-close" onClick={handleCloseGradeModal}>×</button>
-            <h2>End and grade the exam?</h2>
+            <h2>End and grade the exam? </h2>
             <div className="modal-actions">
               <button className="modal-grade-button" onClick={handleConfirmGrade}>
                 Grade Exam
@@ -798,4 +874,3 @@ const App = () => {
 };
 
 export default App;
-

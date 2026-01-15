@@ -1612,3 +1612,15 @@ body {
     min-width: 120px;
   }
 }
+.question-header.flagged {
+  background-color:  #ffebee;
+  border-left: 4px solid #f44336;
+}
+
+.question-counter.flagged {
+  color: #d32f2f;
+}
+
+.question-text.flagged {
+  color: #d32f2f;
+}
