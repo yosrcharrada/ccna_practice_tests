@@ -59,7 +59,8 @@ const ScoresHistory = ({ onBack }) => {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
       setSortField(field);
-      setSortDirection(field === 'dateTime' ? 'desc' : 'desc');
+      // Default to descending for both date and score (newest/highest first)
+      setSortDirection('desc');
     }
   };
 

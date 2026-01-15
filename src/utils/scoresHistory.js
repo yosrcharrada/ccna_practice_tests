@@ -31,7 +31,8 @@ export const saveScore = (scoreData) => {
   try {
     const history = getScoresHistory();
     const newScore = {
-      id: Date.now(), // Unique ID for each attempt
+      // Use timestamp + random number to avoid collisions
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       ...scoreData,
       dateTime: scoreData.dateTime || new Date().toISOString()
     };
