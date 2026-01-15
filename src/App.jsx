@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import './Matching.css';  // ← Add this line
 import { examBanks, getRandomExam } from './data';
+import ScoresHistory from './components/ScoresHistory';
+import { saveScore } from './utils/scoresHistory';
 
 // Constants
 const EXAM_DURATION_SECONDS = 1800; // 30 minutes
@@ -16,7 +18,7 @@ const App = () => {
   const [markedForReview, setMarkedForReview] = useState({});
   const [showAnswer, setShowAnswer] = useState(false);
   const [showGradeModal, setShowGradeModal] = useState(false);
-  const [currentView, setCurrentView] = useState('exam'); // 'exam', 'results', 'review'
+  const [currentView, setCurrentView] = useState('start'); // 'start', 'exam', 'results', 'review', 'history'
   const [selectedExamBank, setSelectedExamBank] = useState('examA');
   const [currentExamQuestions, setCurrentExamQuestions] = useState([]);
 
@@ -27,7 +29,58 @@ const App = () => {
   const handleSubmitExam = useCallback(() => {
     setExamSubmitted(true);
     setCurrentView('results');
-  }, []);
+    
+    // Calculate and save score to history
+    const score = calculateScoreForSubmission();
+    const examName = getExamBankDisplayName(selectedExamBank);
+    const scoreData = {
+      score: score.percentage,
+      points: score.points,
+      examName: examName,
+      totalQuestions: score.total,
+      correctAnswers: score.correct,
+      passed: score.points >= 825,
+      dateTime: new Date().toISOString()
+    };
+    saveScore(scoreData);
+  }, [selectedExamBank, currentExamQuestions, answers, matchingAnswers]);
+
+  const calculateScoreForSubmission = () => {
+    let correct = 0;
+    currentExamQuestions.forEach((q) => {
+      const userAnswer = answers[q.id];
+      const correctAnswer = q.correctAnswer;
+      
+      if (q.questionType === "Multi-select") {
+        const sortedUser = Array.isArray(userAnswer) ? [...userAnswer].sort() : [];
+        const sortedCorrect = Array.isArray(correctAnswer) ? [...correctAnswer].sort() : [];
+        
+        if (JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect)) {
+          correct++;
+        }
+      } else if (q.questionType === "Matching") {
+        const userMatches = matchingAnswers[q.id] || {};
+        const correctMatches = q.correctAnswer;
+        
+        if (JSON.stringify(userMatches) === JSON.stringify(correctMatches)) {
+          correct++;
+        }
+      } else {
+        if (userAnswer === correctAnswer) {
+          correct++;
+        }
+      }
+    });
+    
+    const percentage = ((correct / currentExamQuestions.length) * 100).toFixed(1);
+    const points = Math.round((correct / currentExamQuestions.length) * 1000);
+    return {
+      correct,
+      total: currentExamQuestions.length,
+      percentage,
+      points
+    };
+  };
 
   const handleToggleMarkForReview = () => {
     const questionId = currentExamQuestions[currentQuestion]. id;
@@ -297,7 +350,7 @@ const App = () => {
     return bank ? bank.length : 0;
   };
 
-  if (! examStarted) {
+  if (currentView === 'start' || (!examStarted && currentView !== 'history')) {
     return (
       <div className="start-screen">
         <div className="start-container-wide">
@@ -410,11 +463,20 @@ const App = () => {
               <button className="start-button" onClick={handleStartExam}>
                 Begin Exam
               </button>
+              
+              <button className="history-button" onClick={() => setCurrentView('history')}>
+                📊 View Scores History
+              </button>
             </div>
           </div>
         </div>
       </div>
     );
+  }
+
+  // Scores History View
+  if (currentView === 'history') {
+    return <ScoresHistory onBack={() => setCurrentView('start')} />;
   }
 
   if (examSubmitted && currentView === 'results') {
