@@ -32,7 +32,7 @@ export const saveScore = (scoreData) => {
     const history = getScoresHistory();
     const newScore = {
       // Use timestamp + random number to avoid collisions
-      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
       ...scoreData,
       dateTime: scoreData.dateTime || new Date().toISOString()
     };
