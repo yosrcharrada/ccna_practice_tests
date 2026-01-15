@@ -26,7 +26,7 @@ const App = () => {
   const [matchingAnswers, setMatchingAnswers] = useState({});
   const [selectedTerm, setSelectedTerm] = useState(null);
 
-  const calculateScoreForSubmission = useCallback(() => {
+  const calculateScore = useCallback(() => {
     let correct = 0;
     currentExamQuestions.forEach((q) => {
       const userAnswer = answers[q.id];
@@ -68,7 +68,7 @@ const App = () => {
     setCurrentView('results');
     
     // Calculate and save score to history
-    const score = calculateScoreForSubmission();
+    const score = calculateScore();
     const examName = getExamBankDisplayName(selectedExamBank);
     const scoreData = {
       score: score.percentage,
@@ -80,7 +80,7 @@ const App = () => {
       dateTime: new Date().toISOString()
     };
     saveScore(scoreData);
-  }, [selectedExamBank, calculateScoreForSubmission]);
+  }, [selectedExamBank, calculateScore]);
 
   const handleToggleMarkForReview = () => {
     const questionId = currentExamQuestions[currentQuestion]. id;
@@ -288,46 +288,6 @@ const App = () => {
     setShowAnswer(false);
     setCurrentView('exam');
     setSelectedTerm(null);
-  };
-
-  const calculateScore = () => {
-    let correct = 0;
-    currentExamQuestions.forEach((q) => {
-      const userAnswer = answers[q.id];
-      const correctAnswer = q.correctAnswer;
-      
-      if (q.questionType === "Multi-select") {
-        // For multi-select, check if arrays match
-        const sortedUser = Array.isArray(userAnswer) ? [...userAnswer].sort() : [];
-        const sortedCorrect = Array.isArray(correctAnswer) ? [...correctAnswer].sort() : [];
-        
-        if (JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect)) {
-          correct++;
-        }
-      } else if (q.questionType === "Matching") {
-        // For matching, check if all pairs match
-        const userMatches = matchingAnswers[q.id] || {};
-        const correctMatches = q.correctAnswer;
-        
-        if (JSON.stringify(userMatches) === JSON.stringify(correctMatches)) {
-          correct++;
-        }
-      } else {
-        // For single-select
-        if (userAnswer === correctAnswer) {
-          correct++;
-        }
-      }
-    });
-    
-    const percentage = ((correct / currentExamQuestions.length) * 100).toFixed(1);
-    const points = Math.round((correct / currentExamQuestions.length) * 1000);
-    return {
-      correct,
-      total: currentExamQuestions.length,
-      percentage,
-      points
-    };
   };
 
   const getExamBankDisplayName = (bankKey) => {

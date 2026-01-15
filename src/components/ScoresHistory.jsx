@@ -118,8 +118,8 @@ const ScoresHistory = ({ onBack }) => {
                 value={sortField} 
                 onChange={(e) => handleSortChange(e.target.value)}
               >
-                <option value="dateTime">Date (Newest First)</option>
-                <option value="score">Score (Highest First)</option>
+                <option value="dateTime">Date</option>
+                <option value="score">Score</option>
               </select>
             </label>
           </div>

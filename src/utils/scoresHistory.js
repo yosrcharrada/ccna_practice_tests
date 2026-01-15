@@ -104,6 +104,10 @@ export const sortScores = (scores, field = 'dateTime', direction = 'desc') => {
       bVal = parseFloat(bVal);
     }
 
+    if (aVal === bVal) {
+      return 0;
+    }
+
     if (direction === 'asc') {
       return aVal > bVal ? 1 : -1;
     } else {
