@@ -19,6 +19,16 @@ const App = () => {
   const [currentView, setCurrentView] = useState('exam'); // 'exam', 'results', 'review'
   const [selectedExamBank, setSelectedExamBank] = useState('examA');
   const [currentExamQuestions, setCurrentExamQuestions] = useState([]);
+  const [activeTab, setActiveTab] = useState('questionReview'); // 'questionReview', 'categoryBreakdown', 'references'
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [filters, setFilters] = useState({
+    correctness: 'all', // 'all', 'correct', 'incorrect'
+    flagged: false,
+    category: 'all',
+    questionType: 'all'
+  });
+  const [expandedQuestions, setExpandedQuestions] = useState({});
+  const [showSidebar, setShowSidebar] = useState(false);
 
   // Matching question state
   const [matchingAnswers, setMatchingAnswers] = useState({});
@@ -60,6 +70,32 @@ const App = () => {
 
   const handleBackToResults = () => {
     setCurrentView('results');
+  };
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
+
+  const handleToggleFilterModal = () => {
+    setShowFilterModal(!showFilterModal);
+  };
+
+  const handleFilterChange = (filterType, value) => {
+    setFilters({
+      ...filters,
+      [filterType]: value
+    });
+  };
+
+  const handleToggleQuestionExpansion = (questionId) => {
+    setExpandedQuestions({
+      ...expandedQuestions,
+      [questionId]: !expandedQuestions[questionId]
+    });
+  };
+
+  const handleToggleSidebar = () => {
+    setShowSidebar(!showSidebar);
   };
 
   const calculateCurrentPercentage = () => {
@@ -425,12 +461,28 @@ const App = () => {
       <div className="results-screen">
         <div className="results-container">
           <div className="results-header">
-            <button className="hamburger-menu">☰</button>
+            <button className="hamburger-menu" onClick={handleToggleSidebar}>☰</button>
             <h1>
               Final Score: ExSim-Max for Cisco 200-301 CCNA
               <span className="demo-badge">DEMO</span>
             </h1>
           </div>
+          
+          {showSidebar && (
+            <div className="sidebar-overlay" onClick={handleToggleSidebar}>
+              <div className="sidebar-menu" onClick={(e) => e.stopPropagation()}>
+                <button className="sidebar-close" onClick={handleToggleSidebar}>×</button>
+                <h2>Menu</h2>
+                <ul className="sidebar-links">
+                  <li><a href="#" onClick={() => { setCurrentView('exam'); setExamStarted(false); setShowSidebar(false); }}>Return to Start</a></li>
+                  <li><a href="#" onClick={() => { handleStartExam(); setShowSidebar(false); }}>Retake Exam</a></li>
+                  <li><a href="#" onClick={() => { handleOpenQuestionReview(); setShowSidebar(false); }}>Question Review</a></li>
+                  <li><a href="#settings">Exam Settings</a></li>
+                  <li><a href="#about">About</a></li>
+                </ul>
+              </div>
+            </div>
+          )}
           
           <div className="result-box">
             <div className={`result-status ${passed ? 'passed' : 'failed'}`}>
@@ -480,70 +532,366 @@ const App = () => {
 
   // Question Review Page
   if (examSubmitted && currentView === 'review') {
+    // Filter questions based on active filters
+    const filteredQuestions = currentExamQuestions.filter((q) => {
+      const userAnswer = answers[q.id];
+      const correctAnswer = q.correctAnswer;
+      let isCorrect = false;
+      
+      if (q.questionType === "Multi-select") {
+        const sortedUser = Array.isArray(userAnswer) ? [...userAnswer].sort() : [];
+        const sortedCorrect = Array.isArray(correctAnswer) ? [...correctAnswer].sort() : [];
+        isCorrect = JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
+      } else if (q.questionType === "Matching") {
+        const userMatches = matchingAnswers[q.id] || {};
+        const correctMatches = q.correctAnswer;
+        isCorrect = JSON.stringify(userMatches) === JSON.stringify(correctMatches);
+      } else {
+        isCorrect = userAnswer === correctAnswer;
+      }
+      
+      // Apply filters
+      if (filters.correctness === 'correct' && !isCorrect) return false;
+      if (filters.correctness === 'incorrect' && isCorrect) return false;
+      if (filters.flagged && !markedForReview[q.id]) return false;
+      if (filters.category !== 'all' && q.category !== filters.category) return false;
+      if (filters.questionType !== 'all' && q.questionType !== filters.questionType) return false;
+      
+      return true;
+    });
+
+    // Get category breakdown data
+    const categoryData = {};
+    currentExamQuestions.forEach((q) => {
+      if (!categoryData[q.category]) {
+        categoryData[q.category] = { total: 0, correct: 0 };
+      }
+      categoryData[q.category].total++;
+      
+      const userAnswer = answers[q.id];
+      const correctAnswer = q.correctAnswer;
+      let isCorrect = false;
+      
+      if (q.questionType === "Multi-select") {
+        const sortedUser = Array.isArray(userAnswer) ? [...userAnswer].sort() : [];
+        const sortedCorrect = Array.isArray(correctAnswer) ? [...correctAnswer].sort() : [];
+        isCorrect = JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
+      } else if (q.questionType === "Matching") {
+        const userMatches = matchingAnswers[q.id] || {};
+        const correctMatches = q.correctAnswer;
+        isCorrect = JSON.stringify(userMatches) === JSON.stringify(correctMatches);
+      } else {
+        isCorrect = userAnswer === correctAnswer;
+      }
+      
+      if (isCorrect) categoryData[q.category].correct++;
+    });
+
+    // Get all unique categories and question types for filter
+    const categories = [...new Set(currentExamQuestions.map(q => q.category))];
+    const questionTypes = [...new Set(currentExamQuestions.map(q => q.questionType))];
+
+    // Get all references
+    const allReferences = [];
+    currentExamQuestions.forEach((q, index) => {
+      if (q.reference && q.reference.length > 0) {
+        q.reference.forEach((ref) => {
+          allReferences.push({
+            questionNumber: index + 1,
+            questionId: q.id,
+            ...ref
+          });
+        });
+      }
+    });
+
     return (
       <div className="review-screen">
         <div className="review-container">
           <div className="review-header">
             <button className="back-button" onClick={handleBackToResults}>← Back to Results</button>
             <h1>Question Review</h1>
-            <button className="filter-button">⚙ Filter</button>
+            <button className="filter-button" onClick={handleToggleFilterModal}>⚙ Filter</button>
           </div>
 
-          <div className="review-tabs">
-            <button className="review-tab active">Question Review</button>
-            <button className="review-tab">Category Breakdown</button>
-            <button className="review-tab">References</button>
-          </div>
-
-          <div className="question-cards">
-            {currentExamQuestions.map((q, index) => {
-              const userAnswer = answers[q.id];
-              const correctAnswer = q. correctAnswer;
-              let isCorrect = false;
-              
-              if (q.questionType === "Multi-select") {
-                const sortedUser = Array.isArray(userAnswer) ? [...userAnswer].sort() : [];
-                const sortedCorrect = Array.isArray(correctAnswer) ? [...correctAnswer].sort() : [];
-                isCorrect = JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
-              } else if (q.questionType === "Matching") {
-                const userMatches = matchingAnswers[q.id] || {};
-                const correctMatches = q. correctAnswer;
-                isCorrect = JSON.stringify(userMatches) === JSON.stringify(correctMatches);
-              } else {
-                isCorrect = userAnswer === correctAnswer;
-              }
-              
-              const isFlagged = markedForReview[q.id];
-              
-              return (
-                <div key={q.id} className="question-card">
-                  <div className="card-header">
-                    <div className="card-left">
-                      <span className={`flag-icon ${isFlagged ? 'flagged' :  ''}`}>🚩</span>
-                      <span className={`status-icon ${isCorrect ? 'correct' : 'incorrect'}`}>
-                        {isCorrect ? '●' : '○'}
-                      </span>
-                      <span className="question-number-large">#{index + 1}</span>
-                    </div>
-                    <button className="edit-icon">✎</button>
+          {showFilterModal && (
+            <div className="filter-modal-overlay" onClick={handleToggleFilterModal}>
+              <div className="filter-modal" onClick={(e) => e.stopPropagation()}>
+                <div className="filter-modal-header">
+                  <h3>Filter Questions</h3>
+                  <button className="filter-modal-close" onClick={handleToggleFilterModal}>×</button>
+                </div>
+                <div className="filter-modal-body">
+                  <div className="filter-group">
+                    <label>Correctness:</label>
+                    <select value={filters.correctness} onChange={(e) => handleFilterChange('correctness', e.target.value)}>
+                      <option value="all">All Questions</option>
+                      <option value="correct">Correct Only</option>
+                      <option value="incorrect">Incorrect Only</option>
+                    </select>
                   </div>
-                  
-                  <div className="card-body">
-                    <div className="card-category">{q.category}</div>
-                    <div className="card-question">{q.question}</div>
-                    <div className="card-meta">
-                      <span>{q.id} - {q.questionType}</span>
-                      <span className={`card-result ${isCorrect ? 'correct' : 'incorrect'}`}>
-                        {isCorrect ?  '✓ Correct' : '✗ Incorrect'}
-                      </span>
-                    </div>
+                  <div className="filter-group">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={filters.flagged}
+                        onChange={(e) => handleFilterChange('flagged', e.target.checked)}
+                      />
+                      Show Flagged Only
+                    </label>
+                  </div>
+                  <div className="filter-group">
+                    <label>Category:</label>
+                    <select value={filters.category} onChange={(e) => handleFilterChange('category', e.target.value)}>
+                      <option value="all">All Categories</option>
+                      {categories.map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="filter-group">
+                    <label>Question Type:</label>
+                    <select value={filters.questionType} onChange={(e) => handleFilterChange('questionType', e.target.value)}>
+                      <option value="all">All Types</option>
+                      {questionTypes.map((type) => (
+                        <option key={type} value={type}>{type}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
-              );
-            })}
+                <div className="filter-modal-footer">
+                  <button className="filter-reset-button" onClick={() => setFilters({ correctness: 'all', flagged: false, category: 'all', questionType: 'all' })}>
+                    Reset Filters
+                  </button>
+                  <button className="filter-apply-button" onClick={handleToggleFilterModal}>
+                    Apply
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="review-tabs">
+            <button 
+              className={`review-tab ${activeTab === 'questionReview' ? 'active' : ''}`}
+              onClick={() => handleTabChange('questionReview')}
+            >
+              Question Review
+            </button>
+            <button 
+              className={`review-tab ${activeTab === 'categoryBreakdown' ? 'active' : ''}`}
+              onClick={() => handleTabChange('categoryBreakdown')}
+            >
+              Category Breakdown
+            </button>
+            <button 
+              className={`review-tab ${activeTab === 'references' ? 'active' : ''}`}
+              onClick={() => handleTabChange('references')}
+            >
+              References
+            </button>
           </div>
 
-          <button className="scroll-top-button">↑</button>
+          {activeTab === 'questionReview' && (
+            <div className="question-cards">
+              {filteredQuestions.length === 0 ? (
+                <div className="no-results">No questions match the current filters.</div>
+              ) : (
+                filteredQuestions.map((q) => {
+                  const userAnswer = answers[q.id];
+                  const correctAnswer = q.correctAnswer;
+                  let isCorrect = false;
+                  
+                  if (q.questionType === "Multi-select") {
+                    const sortedUser = Array.isArray(userAnswer) ? [...userAnswer].sort() : [];
+                    const sortedCorrect = Array.isArray(correctAnswer) ? [...correctAnswer].sort() : [];
+                    isCorrect = JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
+                  } else if (q.questionType === "Matching") {
+                    const userMatches = matchingAnswers[q.id] || {};
+                    const correctMatches = q.correctAnswer;
+                    isCorrect = JSON.stringify(userMatches) === JSON.stringify(correctMatches);
+                  } else {
+                    isCorrect = userAnswer === correctAnswer;
+                  }
+                  
+                  const isFlagged = markedForReview[q.id];
+                  const isExpanded = expandedQuestions[q.id];
+                  const actualIndex = currentExamQuestions.findIndex(question => question.id === q.id);
+                  
+                  return (
+                    <div 
+                      key={q.id} 
+                      className={`question-card ${isFlagged ? 'flagged-card' : ''}`}
+                      onClick={() => handleToggleQuestionExpansion(q.id)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <div className="card-header">
+                        <div className="card-left">
+                          <span className={`flag-icon ${isFlagged ? 'flagged' : ''}`}>🚩</span>
+                          <span className={`status-icon ${isCorrect ? 'correct' : 'incorrect'}`}>
+                            {isCorrect ? '●' : '○'}
+                          </span>
+                          <span className="question-number-large">#{actualIndex + 1}</span>
+                        </div>
+                        <button className="edit-icon" onClick={(e) => { e.stopPropagation(); }}>✎</button>
+                      </div>
+                      
+                      <div className="card-body">
+                        <div className="card-category">{q.category}</div>
+                        <div className="card-question" dangerouslySetInnerHTML={{ __html: q.question }} />
+                        <div className="card-meta">
+                          <span>{q.id} - {q.questionType}</span>
+                          <span className={`card-result ${isCorrect ? 'correct' : 'incorrect'}`}>
+                            {isCorrect ? '✓ Correct' : '✗ Incorrect'}
+                          </span>
+                        </div>
+
+                        {isExpanded && (
+                          <div className="card-expanded-content" onClick={(e) => e.stopPropagation()}>
+                            <div className="expanded-divider"></div>
+                            
+                            {q.questionType !== "Matching" && (
+                              <div className="expanded-options">
+                                <h4>Options:</h4>
+                                {q.options.map((option, idx) => {
+                                  const isUserSelected = q.questionType === "Multi-select" 
+                                    ? (userAnswer || []).includes(idx)
+                                    : userAnswer === idx;
+                                  const correctAnswers = Array.isArray(q.correctAnswer) 
+                                    ? q.correctAnswer 
+                                    : [q.correctAnswer];
+                                  const isCorrectOption = correctAnswers.includes(idx);
+                                  
+                                  return (
+                                    <div 
+                                      key={idx} 
+                                      className={`expanded-option ${isUserSelected ? 'user-selected' : ''} ${isCorrectOption ? 'correct-option' : ''}`}
+                                    >
+                                      <span className="option-letter-expanded">
+                                        {String.fromCharCode(65 + idx)}.
+                                      </span>
+                                      <span dangerouslySetInnerHTML={{ __html: option }} />
+                                      {isUserSelected && <span className="option-badge user-badge">Your Answer</span>}
+                                      {isCorrectOption && <span className="option-badge correct-badge">Correct</span>}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+
+                            {q.questionType === "Matching" && (
+                              <div className="expanded-matching">
+                                <h4>Your Matches:</h4>
+                                <div className="matching-review">
+                                  {q.matchingPairs.terms.map((term) => {
+                                    const userMatches = matchingAnswers[q.id] || {};
+                                    const userDefId = userMatches[term.id];
+                                    const correctDefId = q.correctAnswer[term.id];
+                                    const userDef = q.matchingPairs.definitions.find(d => d.id === userDefId);
+                                    const correctDef = q.matchingPairs.definitions.find(d => d.id === correctDefId);
+                                    const isMatchCorrect = userDefId === correctDefId;
+                                    
+                                    return (
+                                      <div key={term.id} className="matching-review-row">
+                                        <div className="matching-term-col">{term.text}</div>
+                                        <div className={`matching-arrow ${isMatchCorrect ? 'correct' : 'incorrect'}`}>→</div>
+                                        <div className={`matching-def-col ${isMatchCorrect ? 'correct' : 'incorrect'}`}>
+                                          {userDef ? userDef.text : '(Not matched)'}
+                                          {!isMatchCorrect && correctDef && (
+                                            <div className="correct-match-hint">Correct: {correctDef.text}</div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
+
+                            <div className="expanded-explanation">
+                              <h4>Explanation:</h4>
+                              <div dangerouslySetInnerHTML={{ __html: q.explanation }} />
+                            </div>
+
+                            {q.reference && q.reference.length > 0 && (
+                              <div className="expanded-reference">
+                                <h4>References:</h4>
+                                {q.reference.map((ref, refIdx) => (
+                                  <div key={refIdx} className="expanded-reference-item">
+                                    <strong>{ref.title}</strong>
+                                    <p>{ref.description}</p>
+                                    {ref.link && (
+                                      <a href={ref.link} target="_blank" rel="noopener noreferrer">
+                                        {ref.link}
+                                      </a>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          )}
+
+          {activeTab === 'categoryBreakdown' && (
+            <div className="category-breakdown-content">
+              <h2>Performance by Category</h2>
+              <div className="category-cards">
+                {Object.entries(categoryData).map(([category, data]) => {
+                  const percentage = ((data.correct / data.total) * 100).toFixed(1);
+                  return (
+                    <div key={category} className="category-card">
+                      <h3>{category}</h3>
+                      <div className="category-stats">
+                        <div className="category-score">
+                          {data.correct} / {data.total} Correct
+                        </div>
+                        <div className="category-percentage">{percentage}%</div>
+                      </div>
+                      <div className="category-progress-bar">
+                        <div 
+                          className="category-progress-fill" 
+                          style={{ width: `${percentage}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'references' && (
+            <div className="references-content">
+              <h2>Study References</h2>
+              {allReferences.length === 0 ? (
+                <div className="no-results">No references available for these questions.</div>
+              ) : (
+                <div className="references-list">
+                  {allReferences.map((ref, idx) => (
+                    <div key={idx} className="reference-card">
+                      <div className="reference-question-number">Question #{ref.questionNumber}</div>
+                      <h3>{ref.title}</h3>
+                      <p>{ref.description}</p>
+                      {ref.link && (
+                        <a href={ref.link} target="_blank" rel="noopener noreferrer" className="reference-link">
+                          View Resource →
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          <button className="scroll-top-button" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>↑</button>
         </div>
       </div>
     );
