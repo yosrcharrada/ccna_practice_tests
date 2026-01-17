@@ -15,11 +15,13 @@ const DEFAULT_FILTERS = {
 
 // Helper functions
 const isAnswerCorrect = (question, userAnswer, matchingAnswers) => {
-  if (question.type === 'matching') {
+  const questionType = question.questionType;
+  
+  if (questionType === 'Matching') {
     const matchingAnswer = matchingAnswers[question.id];
     if (!matchingAnswer) return false;
     return question.options.every(option => matchingAnswer[option.term] === option.definition);
-  } else if (question.type === 'multi-select' || question.type === 'Multiple-select' || question.type === 'Multiple-Select') {
+  } else if (questionType === 'Multi-select' || questionType === 'Multiple-select' || questionType === 'Multiple-Select') {
     if (!userAnswer || userAnswer.length === 0) return false;
     const correctAnswers = question.options.filter(opt => opt.correct).map(opt => opt.id);
     return userAnswer.length === correctAnswers.length && userAnswer.every(ans => correctAnswers.includes(ans));
@@ -730,13 +732,13 @@ const App = () => {
                               <div className="expanded-options">
                                 <h4>Options:</h4>
                                 {q.options.map((option, idx) => {
-                                  const isUserSelected = q.questionType === "Multi-select" 
-                                    ? (userAnswer || []).includes(idx)
-                                    : userAnswer === idx;
+                                  const isUserSelected = q.questionType === "Multi-select" || q.questionType === "Multiple-select" || q.questionType === "Multiple-Select"
+                                    ? (userAnswer || []).includes(option.id)
+                                    : userAnswer === option.id;
                                   const correctAnswers = Array.isArray(q.correctAnswer) 
                                     ? q.correctAnswer 
                                     : [q.correctAnswer];
-                                  const isCorrectOption = correctAnswers.includes(idx);
+                                  const isCorrectOption = option.correct || correctAnswers.includes(option.id);
                                   
                                   return (
                                     <div 
