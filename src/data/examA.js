@@ -2797,31 +2797,37 @@ FastEthernet0/1 is up, line protocol is up
   {
     id: 618,
     category:  "Network Fundamentals",
-    questionType: "Simulator",
-    question: `<p>To complete this question, click <strong>Launch Simulator</strong> and follow the on-screen instructions.</p>`,
-    simulatorConfig: {
-      type: "categorization",
-      instruction: "Place the Application layer protocols into the correct transport protocol category (TCP, UDP, or TCP & UDP).",
-      categories: [
-        { id: "tcp", label: "TCP" },
-        { id: "udp", label:  "UDP" },
-        { id: "both", label: "TCP & UDP" }
-      ],
-      items: [
-        { id: "ftp", label: "FTP", correctCategory: "tcp" },
-        { id: "http", label: "HTTP", correctCategory: "tcp" },
-        { id: "smtp", label: "SMTP", correctCategory: "tcp" },
-        { id: "dhcp", label: "DHCP", correctCategory: "udp" },
-        { id:  "snmp", label: "SNMP", correctCategory: "udp" },
-        { id: "tftp", label: "TFTP", correctCategory: "udp" },
-        { id: "dns", label: "DNS", correctCategory: "both" }
-      ]
-    },
-    correctAnswer: {
-      tcp: ["FTP", "HTTP", "SMTP"],
-      udp: ["DHCP", "SNMP", "TFTP"],
-      both: ["DNS"]
-    },
+    questionType: "Matching",
+    question: `For each protocol instance, match it to its transport protocol category.`,
+    matchingPairs: {
+      terms: [
+    { id: "udp1", text: "UDP" },
+    { id: "tcp2", text: "TCP" },
+    { id: "both1", text: "TCP & UDP" },
+    { id: "tcp1", text: "TCP" },
+    { id: "udp2", text: "UDP" },
+    { id: "tcp3", text: "TCP" },
+    { id: "udp3", text: "UDP" }
+  ],
+  definitions: [
+    { id: "d1", text: "FTP" },
+    { id: "d2", text: "HTTP" },
+    { id: "d3", text: "SMTP" },
+    { id: "d4", text: "DHCP" },
+    { id: "d5", text: "SNMP" },
+    { id: "d6", text: "TFTP" },
+    { id: "d7", text: "DNS" }
+  ]
+},
+correctAnswer: {
+  udp1: "d4",    // UDP → DHCP
+  tcp2: "d2",    // TCP → HTTP
+  both1: "d7",   // TCP & UDP → DNS
+  tcp1: "d1",    // TCP → FTP
+  udp2: "d5",    // UDP → SNMP
+  tcp3: "d3",    // TCP → SMTP
+  udp3: "d6"     // UDP → TFTP
+},
     explanation: `<p><strong>Transmission Control Protocol (TCP)</strong> is a Transport layer protocol that is used for reliable, connection-oriented transfer of data.  Data sent by TCP is ordered and checked for errors, and any lost packets are retransmitted. File Transfer Protocol (FTP), which is used to transfer files over a network, uses TCP ports 20 and 21. Hypertext Transfer Protocol (HTTP), which is used to transfer webpages over the Internet, uses TCP port 80. Simple Mail Transfer Protocol (SMTP), which is used to send email messages, uses TCP port 25.  Other Application layer protocols that use TCP include Post Office Protocol 3 (POP3), which uses TCP port 110, and Telnet, which uses TCP port 23.</p>
 
 <p><strong>User Datagram Protocol (UDP)</strong> is a Transport layer protocol that is used for unreliable, connectionless datagram transfer.  Transmitted datagrams can appear out of sequence or can be dropped without notice. Dynamic Host Configuration Protocol (DHCP), which is used to assign Internet Protocol (IP) addressing information to clients, uses UDP ports 67 and 68. Simple Network Management Protocol (SNMP), which is used to monitor and manage network devices, uses UDP ports 161 and 162. Trivial File Transfer Protocol (TFTP), which is used to transfer files over a network, uses UDP port 69. Other Application layer protocols that use UDP include Network Time Protocol (NTP), which uses UDP port 123, and Remote Authentication Dial-In User Service (RADIUS), which uses UDP ports 1812 and 1813.</p>

@@ -6,7 +6,7 @@ import ScoresHistory from './components/ScoresHistory';
 import { saveScore } from './utils/scoresHistory';
 
 // Constants
-const EXAM_DURATION_SECONDS = 1800; // 30 minutes
+const EXAM_DURATION_SECONDS = 7200; // 2 hours
 const PASSING_SCORE_PERCENTAGE = 70;
 
 const App = () => {
@@ -354,49 +354,10 @@ const App = () => {
                     />
                     <span>Exam C</span>
                   </label>
-                  <label className="exam-bank-option">
-                    <input
-                      type="radio"
-                      name="examBank"
-                      value="examD"
-                      checked={selectedExamBank === 'examD'}
-                      onChange={(e) => setSelectedExamBank(e. target.value)}
-                    />
-                    <span>Exam D</span>
-                  </label>
-                  <label className="exam-bank-option">
-                    <input
-                      type="radio"
-                      name="examBank"
-                      value="custom"
-                      checked={selectedExamBank === 'custom'}
-                      onChange={(e) => setSelectedExamBank(e. target.value)}
-                    />
-                    <span>Custom Exam</span>
-                  </label>
-                  <label className="exam-bank-option">
-                    <input
-                      type="radio"
-                      name="examBank"
-                      value="random"
-                      checked={selectedExamBank === 'random'}
-                      onChange={(e) => setSelectedExamBank(e. target.value)}
-                    />
-                    <span>Random Exam</span>
-                  </label>
+                  
                 </div>
               </div>
               
-              <div className="exam-mode-section">
-                <h3>
-                  Exam Mode 
-                  <span className="help-icon" title="Select exam mode">?</span>
-                </h3>
-                <div className="exam-mode-buttons">
-                  <button className="mode-button active">Study Mode</button>
-                  <button className="mode-button">Simulation Mode</button>
-                </div>
-              </div>
             </div>
             
             <div className="start-right-panel">
@@ -631,7 +592,6 @@ const App = () => {
           <div className={`question-header ${isQuestionMarked ? 'flagged' :  ''}`}>
             <span className={`question-counter ${isQuestionMarked ? 'flagged' : ''}`}>
               Question {currentQuestion + 1} of {currentExamQuestions.length}
-              <span className="percentage-correct">{currentPercentage}% correct</span>
             </span>
             <button 
               className={`mark-review-button ${isQuestionMarked ? 'marked' : ''}`}
