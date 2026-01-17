@@ -6,6 +6,27 @@ import { examBanks, getRandomExam } from './data';
 // Constants
 const EXAM_DURATION_SECONDS = 1800; // 30 minutes
 const PASSING_SCORE_PERCENTAGE = 70;
+const DEFAULT_FILTERS = {
+  correctness: 'all',
+  flagged: false,
+  category: 'all',
+  questionType: 'all'
+};
+
+// Helper functions
+const isAnswerCorrect = (question, userAnswer, matchingAnswers) => {
+  if (question.type === 'matching') {
+    const matchingAnswer = matchingAnswers[question.id];
+    if (!matchingAnswer) return false;
+    return question.options.every(option => matchingAnswer[option.term] === option.definition);
+  } else if (question.type === 'multi-select' || question.type === 'Multiple-select' || question.type === 'Multiple-Select') {
+    if (!userAnswer || userAnswer.length === 0) return false;
+    const correctAnswers = question.options.filter(opt => opt.correct).map(opt => opt.id);
+    return userAnswer.length === correctAnswers.length && userAnswer.every(ans => correctAnswers.includes(ans));
+  } else {
+    return userAnswer === question.options.find(opt => opt.correct)?.id;
+  }
+};
 
 const App = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -21,12 +42,7 @@ const App = () => {
   const [currentExamQuestions, setCurrentExamQuestions] = useState([]);
   const [activeTab, setActiveTab] = useState('questionReview'); // 'questionReview', 'categoryBreakdown', 'references'
   const [showFilterModal, setShowFilterModal] = useState(false);
-  const [filters, setFilters] = useState({
-    correctness: 'all', // 'all', 'correct', 'incorrect'
-    flagged: false,
-    category: 'all',
-    questionType: 'all'
-  });
+  const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [expandedQuestions, setExpandedQuestions] = useState({});
   const [showSidebar, setShowSidebar] = useState(false);
 
@@ -535,20 +551,7 @@ const App = () => {
     // Filter questions based on active filters
     const filteredQuestions = currentExamQuestions.filter((q) => {
       const userAnswer = answers[q.id];
-      const correctAnswer = q.correctAnswer;
-      let isCorrect = false;
-      
-      if (q.questionType === "Multi-select") {
-        const sortedUser = Array.isArray(userAnswer) ? [...userAnswer].sort() : [];
-        const sortedCorrect = Array.isArray(correctAnswer) ? [...correctAnswer].sort() : [];
-        isCorrect = JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
-      } else if (q.questionType === "Matching") {
-        const userMatches = matchingAnswers[q.id] || {};
-        const correctMatches = q.correctAnswer;
-        isCorrect = JSON.stringify(userMatches) === JSON.stringify(correctMatches);
-      } else {
-        isCorrect = userAnswer === correctAnswer;
-      }
+      const isCorrect = isAnswerCorrect(q, userAnswer, matchingAnswers);
       
       // Apply filters
       if (filters.correctness === 'correct' && !isCorrect) return false;
@@ -569,20 +572,7 @@ const App = () => {
       categoryData[q.category].total++;
       
       const userAnswer = answers[q.id];
-      const correctAnswer = q.correctAnswer;
-      let isCorrect = false;
-      
-      if (q.questionType === "Multi-select") {
-        const sortedUser = Array.isArray(userAnswer) ? [...userAnswer].sort() : [];
-        const sortedCorrect = Array.isArray(correctAnswer) ? [...correctAnswer].sort() : [];
-        isCorrect = JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
-      } else if (q.questionType === "Matching") {
-        const userMatches = matchingAnswers[q.id] || {};
-        const correctMatches = q.correctAnswer;
-        isCorrect = JSON.stringify(userMatches) === JSON.stringify(correctMatches);
-      } else {
-        isCorrect = userAnswer === correctAnswer;
-      }
+      const isCorrect = isAnswerCorrect(q, userAnswer, matchingAnswers);
       
       if (isCorrect) categoryData[q.category].correct++;
     });
@@ -660,7 +650,7 @@ const App = () => {
                   </div>
                 </div>
                 <div className="filter-modal-footer">
-                  <button className="filter-reset-button" onClick={() => setFilters({ correctness: 'all', flagged: false, category: 'all', questionType: 'all' })}>
+                  <button className="filter-reset-button" onClick={() => setFilters(DEFAULT_FILTERS)}>
                     Reset Filters
                   </button>
                   <button className="filter-apply-button" onClick={handleToggleFilterModal}>
@@ -699,20 +689,7 @@ const App = () => {
               ) : (
                 filteredQuestions.map((q) => {
                   const userAnswer = answers[q.id];
-                  const correctAnswer = q.correctAnswer;
-                  let isCorrect = false;
-                  
-                  if (q.questionType === "Multi-select") {
-                    const sortedUser = Array.isArray(userAnswer) ? [...userAnswer].sort() : [];
-                    const sortedCorrect = Array.isArray(correctAnswer) ? [...correctAnswer].sort() : [];
-                    isCorrect = JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
-                  } else if (q.questionType === "Matching") {
-                    const userMatches = matchingAnswers[q.id] || {};
-                    const correctMatches = q.correctAnswer;
-                    isCorrect = JSON.stringify(userMatches) === JSON.stringify(correctMatches);
-                  } else {
-                    isCorrect = userAnswer === correctAnswer;
-                  }
+                  const isCorrect = isAnswerCorrect(q, userAnswer, matchingAnswers);
                   
                   const isFlagged = markedForReview[q.id];
                   const isExpanded = expandedQuestions[q.id];
@@ -733,7 +710,6 @@ const App = () => {
                           </span>
                           <span className="question-number-large">#{actualIndex + 1}</span>
                         </div>
-                        <button className="edit-icon" onClick={(e) => { e.stopPropagation(); }}>✎</button>
                       </div>
                       
                       <div className="card-body">
