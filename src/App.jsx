@@ -4,7 +4,7 @@ import './Matching.css';  // ← Add this line
 import { examBanks, getRandomExam } from './data';
 
 // Constants
-const EXAM_DURATION_SECONDS = 1800; // 30 minutes
+const EXAM_DURATION_SECONDS = 7200; // 2 hours
 const PASSING_SCORE_PERCENTAGE = 70;
 const DEFAULT_FILTERS = {
   correctness: 'all',
@@ -335,10 +335,7 @@ const App = () => {
     const names = {
       'examA':  'Exam A',
       'examB': 'Exam B',
-      'examC':  'Exam C',
-      'examD': 'Exam D',
-      'custom': 'Custom Exam',
-      'random': 'Random Exam'
+      'examC':  'Exam C'
     };
     return names[bankKey] || bankKey;
   };
@@ -395,49 +392,10 @@ const App = () => {
                     />
                     <span>Exam C</span>
                   </label>
-                  <label className="exam-bank-option">
-                    <input
-                      type="radio"
-                      name="examBank"
-                      value="examD"
-                      checked={selectedExamBank === 'examD'}
-                      onChange={(e) => setSelectedExamBank(e. target.value)}
-                    />
-                    <span>Exam D</span>
-                  </label>
-                  <label className="exam-bank-option">
-                    <input
-                      type="radio"
-                      name="examBank"
-                      value="custom"
-                      checked={selectedExamBank === 'custom'}
-                      onChange={(e) => setSelectedExamBank(e. target.value)}
-                    />
-                    <span>Custom Exam</span>
-                  </label>
-                  <label className="exam-bank-option">
-                    <input
-                      type="radio"
-                      name="examBank"
-                      value="random"
-                      checked={selectedExamBank === 'random'}
-                      onChange={(e) => setSelectedExamBank(e. target.value)}
-                    />
-                    <span>Random Exam</span>
-                  </label>
+                  
                 </div>
               </div>
               
-              <div className="exam-mode-section">
-                <h3>
-                  Exam Mode 
-                  <span className="help-icon" title="Select exam mode">?</span>
-                </h3>
-                <div className="exam-mode-buttons">
-                  <button className="mode-button active">Study Mode</button>
-                  <button className="mode-button">Simulation Mode</button>
-                </div>
-              </div>
             </div>
             
             <div className="start-right-panel">
@@ -879,17 +837,17 @@ const App = () => {
   const selectedAnswer = answers[question.id];
   const isQuestionMarked = markedForReview[question.id];
   
-  let isAnswerCorrect = false;
+  let isCurrentAnswerCorrect = false;
   if (question.questionType === "Multi-select") {
     const sortedUser = Array.isArray(selectedAnswer) ? [...selectedAnswer].sort() : [];
     const sortedCorrect = Array.isArray(question.correctAnswer) ? [...question.correctAnswer].sort() : [];
-    isAnswerCorrect = selectedAnswer !== undefined && JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
+    isCurrentAnswerCorrect = selectedAnswer !== undefined && JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
   } else if (question.questionType === "Matching") {
     const userMatches = matchingAnswers[question.id] || {};
     const correctMatches = question.correctAnswer;
-    isAnswerCorrect = selectedAnswer !== undefined && JSON.stringify(userMatches) === JSON.stringify(correctMatches);
+    isCurrentAnswerCorrect = selectedAnswer !== undefined && JSON.stringify(userMatches) === JSON.stringify(correctMatches);
   } else {
-    isAnswerCorrect = selectedAnswer !== undefined && selectedAnswer === question.correctAnswer;
+    isCurrentAnswerCorrect = selectedAnswer !== undefined && selectedAnswer === question.correctAnswer;
   }
   
   const currentPercentage = calculateCurrentPercentage();
@@ -935,7 +893,6 @@ const App = () => {
           <div className={`question-header ${isQuestionMarked ? 'flagged' :  ''}`}>
             <span className={`question-counter ${isQuestionMarked ? 'flagged' : ''}`}>
               Question {currentQuestion + 1} of {currentExamQuestions.length}
-              <span className="percentage-correct">{currentPercentage}% correct</span>
             </span>
             <button 
               className={`mark-review-button ${isQuestionMarked ? 'marked' : ''}`}

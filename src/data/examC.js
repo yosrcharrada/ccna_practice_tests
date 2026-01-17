@@ -1137,38 +1137,45 @@ EIGRP summary routes have an AD of 5. Routes that are learned by EIGRP are calle
   id: 663,
   category: "Network Access",
   questionType: "Matching",
-  question: `Match each feature to either CDP or LLDP.`,
-  matchingPairs: {
-    terms: [
-      { id: "t1", text: "has a 60-second update frequency" },
-      { id: "t2", text: "has a 180-second hold timer" },
-      { id: "t3", text: "is enabled by default" },
-      { id: "t4", text: "is a Layer 2 protocol" },
-      { id: "t5", text: "is a proprietary protocol" },
-      { id: "t6", text: "can convey VTP information" },
-      { id: "t7", text: "has a 30-second update frequency" },
-      { id: "t8", text: "has a 120-second hold timer" },
-      { id: "t9", text: "is disabled by default" },
-      { id: "t10", text: "is an open-standard protocol" }
-    ],
-    definitions: [
-      { id: "CDP", text: "CDP" },
-      { id: "LLDP", text: "LLDP" }
-    ]
-  },
-  correctAnswer: {
-    t1: "CDP",
-    t2: "CDP",
-    t3: "CDP",
-    t4: "CDP",   // Both are layer 2 but match to each as applicable
-    t5: "CDP",
-    t6: "CDP",
-    t7: "LLDP",
-    t8: "LLDP",
-    t9: "LLDP",
-    t10: "LLDP",
-    // Both are L2, so t4 and t4_LLD likewise can be included if needed
-  },
+  question: `For each protocol instance, match it to its correct feature.`,
+matchingPairs: {
+  terms: [
+    { id: "l1", text: "LLDP" },
+    { id: "c1", text: "CDP" },
+    { id: "c2", text: "CDP" },
+    { id: "c3", text: "CDP" },
+    { id: "c4", text: "CDP" },
+    { id: "l2", text: "LLDP" },
+    { id: "c5", text: "CDP" },
+    { id: "l3", text: "LLDP" },
+    { id: "c6", text: "CDP" },
+    { id: "l4", text: "LLDP" }
+  ],
+  definitions: [
+    { id: "d1", text: "has a 60-second update frequency" },   // CDP
+    { id: "d2", text: "has a 180-second hold timer" },        // CDP
+    { id: "d3", text: "is enabled by default" },              // CDP
+    { id: "d4", text: "is a Layer 2 protocol" },              // CDP
+    { id: "d5", text: "is a proprietary protocol" },          // CDP
+    { id: "d6", text: "can convey VTP information" },         // CDP
+    { id: "d7", text: "has a 30-second update frequency" },   // LLDP
+    { id: "d8", text: "has a 120-second hold timer" },        // LLDP
+    { id: "d9", text: "is disabled by default" },             // LLDP
+    { id: "d10", text: "is an open-standard protocol" }       // LLDP
+  ]
+},
+correctAnswer: {
+  l1: "d7",   // LLDP - has a 30-second update frequency
+  c1: "d1",   // CDP - has a 60-second update frequency
+  c2: "d2",   // CDP - has a 180-second hold timer
+  c3: "d3",   // CDP - is enabled by default
+  c4: "d4",   // CDP - is a Layer 2 protocol
+  l2: "d8",   // LLDP - has a 120-second hold timer
+  c5: "d5",   // CDP - is a proprietary protocol
+  l3: "d9",   // LLDP - is disabled by default
+  c6: "d6",   // CDP - can convey VTP information
+  l4: "d10"   // LLDP - is an open-standard protocol
+},
   explanation: `
 Link Layer Discovery Protocol (LLDP) is an Open Systems Connection (OSI) Layer 2 open-standard discovery protocol that is used to facilitate interoperability between Cisco devices and non-Cisco devices. Attributes that can be learned from neighboring devices contain Type, Length, Value (TLV) information including port description, system description, and management address. By default, a Cisco switch will send LLDP advertisements every 30 seconds when LLDP is enabled on an interface. These advertisements are used by neighboring devices to update the LLDP information learned about each neighbor. They are also used as keepalive messages to ensure that a discovered neighbor continues to be available on the network. You can issue the <b>lldp timer rate</b> command from global configuration mode to configure the frequency at which LLDP advertisements are sent by a switch. The default <b>rate</b> value is 30 seconds; however, the rate can be configured to any integer value from 5 through 65534 seconds. A Cisco switch will retain LLDP information for 120 seconds when LLDP is enabled on an interface. This time interval is known as the LLDP holdtime. You can issue the <b>lldp holdtime seconds</b> command from global configuration mode to configure the LLDP holdtime to any integer value from 0 through 65535 seconds. Whenever a new LLDP advertisement is received, the hold timer is reset and the LLDP information is considered current. When the hold timer expires for a particular neighbor, the LLDP information regarding that neighbor is considered stale and is discarded.
 <br><br>
@@ -2030,7 +2037,6 @@ The addresses 10.10.1.1 and 10.10.1.2 are serial interface IP addresses for Rout
   questionType: "Matching",
   question: `
 You should place the addresses as shown in the following graphic:
-<img src="/images/q627.png" alt="matching-subnets" style="max-width:100%;margin:12px 0;">
 Match each subnet mask to the number of valid host addresses it provides.
 `,
   matchingPairs: {
@@ -2143,7 +2149,6 @@ To differentiate the virtual MAC addresses of the various groups, HSRP uses a sp
   questionType: "Matching",
   question: `
 Match each item in the left column to its correct description on the right.<br>
-<img src="/images/q456.png" alt="automation-matching" style="max-width:100%;margin:12px 0;">
 `,
   matchingPairs: {
     terms: [
@@ -3689,7 +3694,6 @@ By contrast, the functionality provided by the lightweight AP includes handling 
   question: `
 Match each API protocol to its correct SDN interface type.<br>
 Two items should be matched to <b>NBI</b>, and four items should be matched to <b>SBI</b>.<br>
-<img src="/images/q462.png" alt="sdn-matching" style="max-width:100%;margin:12px 0;">
 `,
   matchingPairs: {
     terms: [
@@ -3883,7 +3887,6 @@ The IP address 10.1.1.236/30 cannot be used as a host address, because it is the
   questionType: "Matching",
   question: `
 Match each mitigation method to the type of threat or attack it most likely mitigates.
-<img src="/images/q402.png" alt="user-training-physical-access-matching" style="max-width:100%;margin:12px 0;">
 `,
   matchingPairs: {
     terms: [
