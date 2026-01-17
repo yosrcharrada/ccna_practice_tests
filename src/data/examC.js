@@ -1137,7 +1137,7 @@ EIGRP summary routes have an AD of 5. Routes that are learned by EIGRP are calle
   id: 663,
   category: "Network Access",
   questionType: "Matching",
-  question: `For each protocol instance, match it to its correct feature.`,
+ question: `Match each feature to either CDP or LLDP.`,
 matchingPairs: {
   terms: [
     { id: "l1", text: "LLDP" },
@@ -1805,18 +1805,6 @@ The 4-byte Frame Check Sequence (FCS) field appears last in an Ethernet frame. T
   category: "Network Access",
   questionType: "Matching",
   question: `Match each STP feature to its correct function.
-
-Options (left):  
-- BPDU guard  
-- PortFast  
-- root guard  
-- loop guard
-
-Descriptions (right, match to 1–4):  
-1. disables ports that erroneously receive BPDUs  
-2. reduces convergence time by placing edge ports into a forwarding state  
-3. prevents introduced switches from being elected the new root  
-4. prevents a switch port from transitioning to the forwarding state when it stops receiving BPDUs
 `,
   matchingPairs: {
     terms: [
@@ -1833,10 +1821,10 @@ Descriptions (right, match to 1–4):
     ]
   },
   correctAnswer: {
-    t1: "1",
-    t2: "2",
     t3: "3",
-    t4: "4"
+    t4: "4",
+    t1: "1",
+    t2: "2"
   },
   explanation: `
 Root guard is used to prevent newly introduced switches from being elected the new root. This allows administrators to maintain control over which switch is the root. When Spanning Tree Protocol (STP) is used, the device with the lowest bridge priority is elected the root. If an additional device is added to the network with a lower priority than the current root, it will become the new root. However, this could cause the network to reconfigure in unintended ways. To prevent this, root guard can be applied. Root guard is applied on a per-port basis with the spanning-tree guard root command.
@@ -2036,7 +2024,10 @@ The addresses 10.10.1.1 and 10.10.1.2 are serial interface IP addresses for Rout
   category: "Network Fundamentals",
   questionType: "Matching",
   question: `
+<<<<<<< HEAD
 You should place the addresses as shown in the following graphic:
+=======
+>>>>>>> copilot/add-scores-history-feature
 Match each subnet mask to the number of valid host addresses it provides.
 `,
   matchingPairs: {
