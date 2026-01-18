@@ -2181,3 +2181,13 @@ body {
 .question-text.flagged {
   color: #d32f2f;
 }
+
+
+.status-icon.unanswered {
+  color: #999;
+}
+
+.card-result.unanswered {
+  color: #999;
+  font-style: italic;
+}

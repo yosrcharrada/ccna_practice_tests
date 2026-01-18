@@ -17,19 +17,29 @@ const DEFAULT_FILTERS = {
 
 // Helper functions
 const isAnswerCorrect = (question, userAnswer, matchingAnswers) => {
-  const questionType = question.questionType;
-  
-  if (questionType === 'Matching') {
-    const matchingAnswer = matchingAnswers[question.id];
+  // Matching (uses matchingAnswers)
+  if (question.questionType === 'Matching') {
+    const matchingAnswer = matchingAnswers?.[question.id];
     if (!matchingAnswer) return false;
-    return question.options.every(option => matchingAnswer[option.term] === option.definition);
-  } else if (questionType === 'Multi-select' || questionType === 'Multiple-select' || questionType === 'Multiple-Select') {
-    if (!userAnswer || userAnswer.length === 0) return false;
-    const correctAnswers = question.options.filter(opt => opt.correct).map(opt => opt.id);
-    return userAnswer.length === correctAnswers.length && userAnswer.every(ans => correctAnswers.includes(ans));
-  } else {
-    return userAnswer === question.options.find(opt => opt.correct)?.id;
+    // Both are objects with key-value term:def
+    return JSON.stringify(matchingAnswer) === JSON.stringify(question.correctAnswer);
   }
+
+  // Multi-select (array of indices)
+  if (question.questionType === 'Multi-select' || question.questionType === 'Multiple-select' || question.questionType === 'Multiple-Select') {
+    if (!Array.isArray(userAnswer) || !Array.isArray(question.correctAnswer)) return false;
+    const sortedUser = [...userAnswer].sort();
+    const sortedCorrect = [...question.correctAnswer].sort();
+    return JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
+  }
+
+  // Single-select (index)
+  if (question.questionType === 'Single-select') {
+    return userAnswer === question.correctAnswer;
+  }
+
+  // Fallback for other types
+  return false;
 };
 
 const App = () => {
@@ -418,7 +428,6 @@ const App = () => {
                     Current Exam Settings 
                     <span className="help-icon" title="Current exam settings">?</span>
                   </h3>
-                  <button className="modify-settings-btn">Modify Settings</button>
                 </div>
                 <div className="settings-list">
                   <p>✓ Exam is in Study mode</p>
@@ -475,8 +484,6 @@ const App = () => {
                   <li><a href="#" onClick={() => { setCurrentView('exam'); setExamStarted(false); setShowSidebar(false); }}>Return to Start</a></li>
                   <li><a href="#" onClick={() => { handleStartExam(); setShowSidebar(false); }}>Retake Exam</a></li>
                   <li><a href="#" onClick={() => { handleOpenQuestionReview(); setShowSidebar(false); }}>Question Review</a></li>
-                  <li><a href="#settings">Exam Settings</a></li>
-                  <li><a href="#about">About</a></li>
                 </ul>
               </div>
             </div>
@@ -546,18 +553,28 @@ const App = () => {
     });
 
     // Get category breakdown data
-    const categoryData = {};
-    currentExamQuestions.forEach((q) => {
-      if (!categoryData[q.category]) {
-        categoryData[q.category] = { total: 0, correct: 0 };
-      }
-      categoryData[q.category].total++;
-      
-      const userAnswer = answers[q.id];
-      const isCorrect = isAnswerCorrect(q, userAnswer, matchingAnswers);
-      
-      if (isCorrect) categoryData[q.category].correct++;
-    });
+const categoryData = {};
+
+// First, initialize all categories with total count
+currentExamQuestions.forEach((q) => {
+  if (!categoryData[q.category]) {
+    categoryData[q. category] = { total: 0, correct: 0 };
+  }
+  categoryData[q.category].total++;
+});
+
+// Then, count only the answered questions as correct
+currentExamQuestions.forEach((q) => {
+  const userAnswer = answers[q.id];
+  
+  // Only count correctness if the question was answered
+  if (userAnswer !== undefined) {
+    const isCorrect = isAnswerCorrect(q, userAnswer, matchingAnswers);
+    if (isCorrect) {
+      categoryData[q.category].correct++;
+    }
+  }
+});
 
     // Get all unique categories and question types for filter
     const categories = [...new Set(currentExamQuestions.map(q => q.category))];
@@ -671,7 +688,8 @@ const App = () => {
               ) : (
                 filteredQuestions.map((q) => {
                   const userAnswer = answers[q.id];
-                  const isCorrect = isAnswerCorrect(q, userAnswer, matchingAnswers);
+                  const wasAnswered = userAnswer !== undefined;
+                  const isCorrect = wasAnswered ?  isAnswerCorrect(q, userAnswer, matchingAnswers) : false;
                   
                   const isFlagged = markedForReview[q.id];
                   const isExpanded = expandedQuestions[q.id];
@@ -687,8 +705,8 @@ const App = () => {
                       <div className="card-header">
                         <div className="card-left">
                           <span className={`flag-icon ${isFlagged ? 'flagged' : ''}`}>🚩</span>
-                          <span className={`status-icon ${isCorrect ? 'correct' : 'incorrect'}`}>
-                            {isCorrect ? '●' : '○'}
+                          <span className={`status-icon ${!wasAnswered ? 'unanswered' : isCorrect ? 'correct' : 'incorrect'}`}>
+                            {!wasAnswered ? '—' : isCorrect ? '●' : '○'}
                           </span>
                           <span className="question-number-large">#{actualIndex + 1}</span>
                         </div>
@@ -699,8 +717,8 @@ const App = () => {
                         <div className="card-question" dangerouslySetInnerHTML={{ __html: q.question }} />
                         <div className="card-meta">
                           <span>{q.id} - {q.questionType}</span>
-                          <span className={`card-result ${isCorrect ? 'correct' : 'incorrect'}`}>
-                            {isCorrect ? '✓ Correct' : '✗ Incorrect'}
+                          <span className={`card-result ${!wasAnswered ? 'unanswered' :                     isCorrect ? 'correct' : 'incorrect'}`}>
+                            {!wasAnswered ? '—' : isCorrect ? '✓ Correct' : '✗ Incorrect'}
                           </span>
                         </div>
 
@@ -712,13 +730,13 @@ const App = () => {
                               <div className="expanded-options">
                                 <h4>Options:</h4>
                                 {q.options.map((option, idx) => {
-                                  const isUserSelected = q.questionType === "Multi-select" || q.questionType === "Multiple-select" || q.questionType === "Multiple-Select"
-                                    ? (userAnswer || []).includes(option.id)
-                                    : userAnswer === option.id;
+  const isUserSelected = q. questionType === "Multi-select" || q.questionType === "Multiple-select" || q.questionType === "Multiple-Select"
+    ? (userAnswer || []).includes(idx)  // ← Changed from option.id to idx
+    : userAnswer === idx;  // ← Changed from option.id to idx
                                   const correctAnswers = Array.isArray(q.correctAnswer) 
                                     ? q.correctAnswer 
                                     : [q.correctAnswer];
-                                  const isCorrectOption = option.correct || correctAnswers.includes(option.id);
+                                  const isCorrectOption = option.correct || correctAnswers.includes(idx); // ← Changed from option.id to idx
                                   
                                   return (
                                     <div 
@@ -801,7 +819,7 @@ const App = () => {
             <div className="category-breakdown-content">
               <h2>Performance by Category</h2>
               <div className="category-cards">
-                {Object.entries(categoryData).map(([category, data]) => {
+                {Object.entries(categoryData).filter(([category]) => category && category.trim() !== "").map(([category, data]) => {
                   const percentage = ((data.correct / data.total) * 100).toFixed(1);
                   return (
                     <div key={category} className="category-card">

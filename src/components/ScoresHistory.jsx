@@ -107,9 +107,6 @@ const ScoresHistory = ({ onBack }) => {
                 <option value="Exam A">Exam A</option>
                 <option value="Exam B">Exam B</option>
                 <option value="Exam C">Exam C</option>
-                <option value="Exam D">Exam D</option>
-                <option value="Custom Exam">Custom Exam</option>
-                <option value="Random Exam">Random Exam</option>
               </select>
             </label>
 
