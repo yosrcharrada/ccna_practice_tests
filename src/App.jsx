@@ -1,13 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import './App.css';
 import './Matching.css';  // ← Add this line
 import { examBanks, getRandomExam } from './data';
 import ScoresHistory from './components/ScoresHistory';
 import { saveScore } from './utils/scoresHistory';
+import { shuffleArray } from './utils/shuffleArray';
+import { saveExamState, loadExamState, clearExamState } from './utils/examStorage';
 
 // Constants
 const EXAM_DURATION_SECONDS = 7200; // 2 hours
-const PASSING_SCORE_PERCENTAGE = 70;
 const DEFAULT_FILTERS = {
   correctness: 'all',
   flagged: false,
@@ -43,6 +45,8 @@ const isAnswerCorrect = (question, userAnswer, matchingAnswers) => {
 };
 
 const App = () => {
+  const navigate = useNavigate();
+  
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [examStarted, setExamStarted] = useState(false);
@@ -51,7 +55,6 @@ const App = () => {
   const [markedForReview, setMarkedForReview] = useState({});
   const [showAnswer, setShowAnswer] = useState(false);
   const [showGradeModal, setShowGradeModal] = useState(false);
-  const [currentView, setCurrentView] = useState('start'); // 'start', 'exam', 'results', 'review', 'history'
   const [selectedExamBank, setSelectedExamBank] = useState('examA');
   const [currentExamQuestions, setCurrentExamQuestions] = useState([]);
   const [activeTab, setActiveTab] = useState('questionReview'); // 'questionReview', 'categoryBreakdown', 'references'
@@ -59,10 +62,51 @@ const App = () => {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [expandedQuestions, setExpandedQuestions] = useState({});
   const [showSidebar, setShowSidebar] = useState(false);
+  const [hasUnfinished, setHasUnfinished] = useState(false);
 
   // Matching question state
   const [matchingAnswers, setMatchingAnswers] = useState({});
   const [selectedTerm, setSelectedTerm] = useState(null);
+
+  // Load exam state from localStorage on mount
+  useEffect(() => {
+    const savedState = loadExamState();
+    if (savedState && savedState.examStarted && !savedState.examSubmitted) {
+      setHasUnfinished(true);
+      // Optionally auto-restore the state
+      // For now, we'll just show a "Resume Exam" button
+    } else {
+      setHasUnfinished(false);
+    }
+  }, []);
+
+  // Save exam state to localStorage whenever relevant state changes
+  useEffect(() => {
+    if (examStarted && !examSubmitted) {
+      const stateToSave = {
+        currentQuestion,
+        answers,
+        examStarted,
+        examSubmitted,
+        timeRemaining,
+        markedForReview,
+        selectedExamBank,
+        currentExamQuestions,
+        matchingAnswers,
+      };
+      saveExamState(stateToSave);
+    }
+  }, [
+    currentQuestion,
+    answers,
+    examStarted,
+    examSubmitted,
+    timeRemaining,
+    markedForReview,
+    selectedExamBank,
+    currentExamQuestions,
+    matchingAnswers,
+  ]);
 
   const calculateScore = useCallback(() => {
     let correct = 0;
@@ -103,7 +147,7 @@ const App = () => {
 
   const handleSubmitExam = useCallback(() => {
     setExamSubmitted(true);
-    setCurrentView('results');
+    navigate('/results');
     
     // Calculate and save score to history
     const score = calculateScore();
@@ -118,7 +162,10 @@ const App = () => {
       dateTime: new Date().toISOString()
     };
     saveScore(scoreData);
-  }, [selectedExamBank, calculateScore]);
+    
+    // Clear localStorage after submission
+    clearExamState();
+  }, [selectedExamBank, calculateScore, navigate]);
 
   const handleToggleMarkForReview = () => {
     const questionId = currentExamQuestions[currentQuestion]. id;
@@ -146,11 +193,11 @@ const App = () => {
   };
 
   const handleOpenQuestionReview = () => {
-    setCurrentView('review');
+    navigate('/review');
   };
 
   const handleBackToResults = () => {
-    setCurrentView('results');
+    navigate('/results');
   };
 
   const handleTabChange = (tab) => {
@@ -320,12 +367,6 @@ const App = () => {
     }
   };
 
-  const handleQuestionJump = (index) => {
-    setCurrentQuestion(index);
-    setShowAnswer(false);
-    setSelectedTerm(null);
-  };
-
   const handleStartExam = () => {
     // Load questions based on selected exam bank
     let questions;
@@ -337,11 +378,14 @@ const App = () => {
     
     // Ensure we have at least one question before starting
     if (questions.length === 0) {
-      alert('No questions available.  Please add questions to the exam bank.');
+      alert('No questions available. Please add questions to the exam bank.');
       return;
     }
     
-    setCurrentExamQuestions(questions);
+    // Shuffle questions using Fisher-Yates algorithm
+    const shuffledQuestions = shuffleArray(questions);
+    
+    setCurrentExamQuestions(shuffledQuestions);
     setExamStarted(true);
     setAnswers({});
     setMatchingAnswers({});
@@ -350,8 +394,43 @@ const App = () => {
     setTimeRemaining(EXAM_DURATION_SECONDS);
     setMarkedForReview({});
     setShowAnswer(false);
-    setCurrentView('exam');
     setSelectedTerm(null);
+    setHasUnfinished(false);
+    
+    navigate('/exam');
+  };
+
+  const handleResumeExam = () => {
+    const savedState = loadExamState();
+    if (savedState) {
+      setCurrentQuestion(savedState.currentQuestion);
+      setAnswers(savedState.answers);
+      setExamStarted(savedState.examStarted);
+      setExamSubmitted(savedState.examSubmitted);
+      setTimeRemaining(savedState.timeRemaining);
+      setMarkedForReview(savedState.markedForReview);
+      setSelectedExamBank(savedState.selectedExamBank);
+      setCurrentExamQuestions(savedState.currentExamQuestions);
+      setMatchingAnswers(savedState.matchingAnswers);
+      setHasUnfinished(false);
+      
+      navigate('/exam');
+    }
+  };
+
+  const handleReturnToStart = () => {
+    setExamStarted(false);
+    setExamSubmitted(false);
+    setCurrentQuestion(0);
+    setAnswers({});
+    setMatchingAnswers({});
+    setMarkedForReview({});
+    setShowAnswer(false);
+    setSelectedTerm(null);
+    setHasUnfinished(false);
+    
+    clearExamState();
+    navigate('/');
   };
 
   const getExamBankDisplayName = (bankKey) => {
@@ -371,96 +450,113 @@ const App = () => {
     return bank ? bank.length : 0;
   };
 
-  if (currentView === 'start' || (!examStarted && currentView !== 'history')) {
-    return (
-      <div className="start-screen">
-        <div className="start-container-wide">
-          <h1>CCNA Exam Practice</h1>
-          
-          <div className="start-content">
-            <div className="start-left-panel">
-              <div className="exam-bank-section">
-                <h3>
-                  Exam Bank 
-                  <span className="help-icon" title="Select which exam bank to use">? </span>
-                </h3>
-                <div className="exam-bank-options">
-                  <label className="exam-bank-option">
-                    <input
-                      type="radio"
-                      name="examBank"
-                      value="examA"
-                      checked={selectedExamBank === 'examA'}
-                      onChange={(e) => setSelectedExamBank(e.target.value)}
-                    />
-                    <span>Exam A</span>
-                  </label>
-                  <label className="exam-bank-option">
-                    <input
-                      type="radio"
-                      name="examBank"
-                      value="examB"
-                      checked={selectedExamBank === 'examB'}
-                      onChange={(e) => setSelectedExamBank(e.target.value)}
-                    />
-                    <span>Exam B</span>
-                  </label>
-                  <label className="exam-bank-option">
-                    <input
-                      type="radio"
-                      name="examBank"
-                      value="examC"
-                      checked={selectedExamBank === 'examC'}
-                      onChange={(e) => setSelectedExamBank(e.target. value)}
-                    />
-                    <span>Exam C</span>
-                  </label>
-                  
-                </div>
+  // Start Screen Component
+  const StartScreen = () => (
+    <div className="start-screen">
+      <div className="start-container-wide">
+        <h1>CCNA Exam Practice</h1>
+        
+        <div className="start-content">
+          <div className="start-left-panel">
+            <div className="exam-bank-section">
+              <h3>
+                Exam Bank 
+                <span className="help-icon" title="Select which exam bank to use">?</span>
+              </h3>
+              <div className="exam-bank-options">
+                <label className="exam-bank-option">
+                  <input
+                    type="radio"
+                    name="examBank"
+                    value="examA"
+                    checked={selectedExamBank === 'examA'}
+                    onChange={(e) => setSelectedExamBank(e.target.value)}
+                  />
+                  <span>Exam A</span>
+                </label>
+                <label className="exam-bank-option">
+                  <input
+                    type="radio"
+                    name="examBank"
+                    value="examB"
+                    checked={selectedExamBank === 'examB'}
+                    onChange={(e) => setSelectedExamBank(e.target.value)}
+                  />
+                  <span>Exam B</span>
+                </label>
+                <label className="exam-bank-option">
+                  <input
+                    type="radio"
+                    name="examBank"
+                    value="examC"
+                    checked={selectedExamBank === 'examC'}
+                    onChange={(e) => setSelectedExamBank(e.target.value)}
+                  />
+                  <span>Exam C</span>
+                </label>
+                
               </div>
-              
             </div>
             
-            <div className="start-right-panel">
-              <div className="exam-settings-panel">
-                <div className="settings-header">
-                  <h3>
-                    Current Exam Settings 
-                    <span className="help-icon" title="Current exam settings">?</span>
-                  </h3>
-                </div>
-                <div className="settings-list">
-                  <p>✓ Exam is in Study mode</p>
-                  <p>✓ Questions are randomized</p>
-                  <p>✓ Answers are randomized</p>
-                  <p>✓ Exam is not timed</p>
-                  <p>✓ Show answers inline</p>
-                  <p>✓ Show live scoring</p>
-                  <p>✓ Always show number of correct answers</p>
-                  <p>✓ This exam has {getQuestionCount(selectedExamBank)} questions</p>
-                </div>
+          </div>
+          
+          <div className="start-right-panel">
+            <div className="exam-settings-panel">
+              <div className="settings-header">
+                <h3>
+                  Current Exam Settings 
+                  <span className="help-icon" title="Current exam settings">?</span>
+                </h3>
               </div>
-              
-              <button className="start-button" onClick={handleStartExam}>
-                Begin Exam
-              </button>
-              
-              <button className="history-button" onClick={() => setCurrentView('history')}>
-                📊 View Scores History
-              </button>
+              <div className="settings-list">
+                <p>✓ Exam is in Study mode</p>
+                <p>✓ Questions are randomized</p>
+                <p>✓ Answers are randomized</p>
+                <p>✓ Exam is not timed</p>
+                <p>✓ Show answers inline</p>
+                <p>✓ Show live scoring</p>
+                <p>✓ Always show number of correct answers</p>
+                <p>✓ This exam has {getQuestionCount(selectedExamBank)} questions</p>
+              </div>
             </div>
+            
+            {hasUnfinished && (
+              <button className="resume-button" onClick={handleResumeExam} style={{
+                marginBottom: '10px',
+                backgroundColor: '#28a745',
+                color: 'white',
+                padding: '15px 30px',
+                fontSize: '18px',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer',
+                width: '100%',
+                fontWeight: 'bold'
+              }}>
+                📝 Resume Unfinished Exam
+              </button>
+            )}
+            
+            <button className="start-button" onClick={handleStartExam}>
+              Begin Exam
+            </button>
+            
+            <button className="history-button" onClick={() => navigate('/history')}>
+              📊 View Scores History
+            </button>
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 
-  // Scores History View
-  if (currentView === 'history') {
-    return <ScoresHistory onBack={() => setCurrentView('start')} />;
-  }
+  // Results Screen Component
+  const ResultsScreen = () => {
+    if (!examSubmitted) {
+      navigate('/');
+      return null;
+    }
 
-  if (examSubmitted && currentView === 'results') {
     const score = calculateScore();
     const passed = score.points >= 825;
 
@@ -481,7 +577,7 @@ const App = () => {
                 <button className="sidebar-close" onClick={handleToggleSidebar}>×</button>
                 <h2>Menu</h2>
                 <ul className="sidebar-links">
-                  <li><a href="#" onClick={() => { setCurrentView('exam'); setExamStarted(false); setShowSidebar(false); }}>Return to Start</a></li>
+                  <li><a href="#" onClick={() => { handleReturnToStart(); setShowSidebar(false); }}>Return to Start</a></li>
                   <li><a href="#" onClick={() => { handleStartExam(); setShowSidebar(false); }}>Retake Exam</a></li>
                   <li><a href="#" onClick={() => { handleOpenQuestionReview(); setShowSidebar(false); }}>Question Review</a></li>
                 </ul>
@@ -509,9 +605,9 @@ const App = () => {
               <div className="progress-bar-background">
                 <div 
                   className="progress-bar-fill" 
-                  style={{ width:  `${(score.points / 1000) * 100}%` }}
+                  style={{ width: `${(score.points / 1000) * 100}%` }}
                 ></div>
-                <div className="passing-marker" style={{ left: '82. 5%' }}></div>
+                <div className="passing-marker" style={{ left: '82.5%' }}></div>
               </div>
             </div>
             <div className="progress-bar-labels">
@@ -533,10 +629,15 @@ const App = () => {
         </div>
       </div>
     );
-  }
+  };
 
-  // Question Review Page
-  if (examSubmitted && currentView === 'review') {
+  // Question Review Page Component
+  const ReviewScreen = () => {
+    if (!examSubmitted) {
+      navigate('/');
+      return null;
+    }
+
     // Filter questions based on active filters
     const filteredQuestions = currentExamQuestions.filter((q) => {
       const userAnswer = answers[q.id];
@@ -871,28 +972,20 @@ currentExamQuestions.forEach((q) => {
         </div>
       </div>
     );
-  }
+  };
 
-  const question = currentExamQuestions[currentQuestion];
-  const selectedAnswer = answers[question.id];
-  const isQuestionMarked = markedForReview[question.id];
-  
-  let isCurrentAnswerCorrect = false;
-  if (question.questionType === "Multi-select") {
-    const sortedUser = Array.isArray(selectedAnswer) ? [...selectedAnswer].sort() : [];
-    const sortedCorrect = Array.isArray(question.correctAnswer) ? [...question.correctAnswer].sort() : [];
-    isCurrentAnswerCorrect = selectedAnswer !== undefined && JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
-  } else if (question.questionType === "Matching") {
-    const userMatches = matchingAnswers[question.id] || {};
-    const correctMatches = question.correctAnswer;
-    isCurrentAnswerCorrect = selectedAnswer !== undefined && JSON.stringify(userMatches) === JSON.stringify(correctMatches);
-  } else {
-    isCurrentAnswerCorrect = selectedAnswer !== undefined && selectedAnswer === question.correctAnswer;
-  }
-  
-  const currentPercentage = calculateCurrentPercentage();
+  // Exam Screen Component
+  const ExamScreen = () => {
+    if (!examStarted || currentExamQuestions.length === 0) {
+      navigate('/');
+      return null;
+    }
 
-  return (
+    const question = currentExamQuestions[currentQuestion];
+    const selectedAnswer = answers[question.id];
+    const isQuestionMarked = markedForReview[question.id];
+
+    return (
     <div className="exam-container">
       <header className="exam-header">
         <div className="header-left">
@@ -1073,8 +1166,8 @@ currentExamQuestions.forEach((q) => {
 
             {showAnswer && selectedAnswer !== undefined && question.questionType !== "Matching" && (
               <div className="answer-explanation">
-                <div className={`answer-status ${isAnswerCorrect ? 'correct' : 'incorrect'}`}>
-                  {isAnswerCorrect ? 'Correct' : 'Incorrect'}
+                <div className={`answer-status ${isAnswerCorrect(question, selectedAnswer, matchingAnswers) ? 'correct' : 'incorrect'}`}>
+                  {isAnswerCorrect(question, selectedAnswer, matchingAnswers) ? 'Correct' : 'Incorrect'}
                 </div>
                 <div className="correct-answer-info">
                   <strong>Correct Answer(s):</strong> {
@@ -1109,8 +1202,8 @@ currentExamQuestions.forEach((q) => {
 
             {showAnswer && question.questionType === "Matching" && (
               <div className="answer-explanation">
-                <div className={`answer-status ${isAnswerCorrect ? 'correct' :  'incorrect'}`}>
-                  {isAnswerCorrect ?  'Correct' : 'Incorrect'}
+                <div className={`answer-status ${isAnswerCorrect(question, selectedAnswer, matchingAnswers) ? 'correct' : 'incorrect'}`}>
+                  {isAnswerCorrect(question, selectedAnswer, matchingAnswers) ? 'Correct' : 'Incorrect'}
                 </div>
                 <div className="explanation-section">
                   <h3>Explanation</h3>
@@ -1194,6 +1287,18 @@ currentExamQuestions.forEach((q) => {
       )}
     </div>
   );
+};
+
+// Main render with routing
+return (
+  <Routes>
+    <Route path="/" element={<StartScreen />} />
+    <Route path="/exam" element={<ExamScreen />} />
+    <Route path="/results" element={<ResultsScreen />} />
+    <Route path="/review" element={<ReviewScreen />} />
+    <Route path="/history" element={<ScoresHistory onBack={() => navigate('/')} />} />
+  </Routes>
+);
 };
 
 export default App;
