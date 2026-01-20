@@ -956,7 +956,7 @@ the VLAN table.</p>`,  // Detailed explanation (wrap paragraphs in <p></p> tags)
   questionType: "Single-select",
   question: `<p>Examine the network diagram below: </p>
 
-<img src="/images/network-diagram-621.png" alt="Network Diagram" style="max-width: 100%; height:  auto; margin: 20px 0;" />
+<p><img src="/images/network-diagram-621.png" alt="Network Diagram" style="max-width: 100%; height:  auto; margin: 20px 0;" /></p>
 
 <p>You have been given the task of configuring the IP properties of all the hosts on the LAN attached to RouterB.  Addresses should be assigned from the 172.16.12.0/28 subnet. The first valid host address has been assigned to the Fast Ethernet interface of RouterB. </p>
 
@@ -2179,7 +2179,7 @@ FastEthernet0/4:
   category: "Security Fundamentals",
   questionType: "Single-select",
   question: `<div style="text-align: center; margin:  20px 0;">
-  <img src="/images/question-419-network-diagram.png" alt="Network diagram showing Router1 connected to Public Internet via S0/0, and connected to a switch via Fa0/0. The switch connects to Music Server1 (10.10.10.1), Music Server2 (10.10.10.2), and Web Server (10.10.10.20)" style="max-width: 100%; height: auto;" />
+  <p><img src="/images/question-419-network-diagram.png" alt="Network diagram showing Router1 connected to Public Internet via S0/0, and connected to a switch via Fa0/0. The switch connects to Music Server1 (10.10.10.1), Music Server2 (10.10.10.2), and Web Server (10.10.10.20)" style="max-width: 100%; height: auto;" /></p>
 </div>
 
 <p>You have been hired as a consultant for Music World Corp. You need to limit access from the Internet to the music download servers, Music Server1 and Music Server2. These two servers should allow only FTP connections from the Internet. The web server is not subject to this policy and should not be restricted.  Other servers on the 10.10.10.0/24 subnet should not allow any connections from the Internet.  You have already issued the <strong>access-list 101 permit tcp any host 10.10.10.20</strong> command and applied the access list outbound on the Fa0/0 interface. </p>
@@ -2589,13 +2589,13 @@ FastEthernet0/1 is up, line protocol is up
 
 <p>MAC addresses are written in hexadecimal format.  With MAC addresses, numbers have a lower value than letters and the hexadecimal value A is lower than the hexadecimal value F. A MAC address is composed of six 8-bit octets for a total of 6 bytes of data in the entire address, as shown in the following diagram:</p>
 
-<img src="/images/mac-address-structure.png" alt="MAC Address Structure showing 6 bytes divided into OUI (first 3 octets) and NIC-specific identifier (last 3 octets)" style="max-width: 500px; margin: 20px 0;" />
+<p><img src="/images/mac-address-structure.png" alt="MAC Address Structure showing 6 bytes divided into OUI (first 3 octets) and NIC-specific identifier (last 3 octets)" style="max-width: 500px; margin: 20px 0;" /></p>
 
 <p>The most significant bytes are at the beginning, or leftmost octet, and are transmitted first.   Bytes decrease in significance as you move to the right through the address to the least significant octet appearing at the end, or rightmost octet. The first three octets represent the organizationally unique identifier (OUI), which is assigned by the Institute of Electrical and Electronics Engineers (IEEE) to identify the manufacturer of the device, and the last three octets make up the unique network interface card (NIC)-specific identifier assigned to the device by the manufacturer.  For example, the MAC address 00-00-0C-F0-F0-F0 represents a unicast MAC address which indicates that the device was manufactured by Cisco. </p>
 
 <p>The significance of each octet follows the same rule of the overall address: the most significant bit is on the left, and the least significant bit is on the right. However, when transmitted, a bit differs from a byte in that the least significant bit of a byte is transmitted first. The two least significant bits of the most significant byte of a MAC address are used as indicator flags; these two bits are bit 2 and bit 1 in the example below: </p>
 
-<img src="/images/mac-address-bits.png" alt="MAC Address bit structure showing bit 1 for unicast/multicast and bit 2 for global/local admin" style="max-width: 500px; margin: 20px 0;" />
+<p><img src="/images/mac-address-bits.png" alt="MAC Address bit structure showing bit 1 for unicast/multicast and bit 2 for global/local admin" style="max-width: 500px; margin: 20px 0;" /></p>
 
 <p>The least significant bit, or bit 1, of the most significant byte is where a MAC address is designated as a unicast address or a multicast address; a 0 equates to unicast, and a 1 equates to multicast. The second least significant bit, or bit 2, is used to designate whether the MAC address is globally administered by the IEEE and carries an OUI or whether the MAC address is locally administered; a 0 indicates the presence of an OUI, and a 1 indicates a locally administered MAC address.</p>
 
@@ -2620,7 +2620,7 @@ FastEthernet0/1 is up, line protocol is up
     id: 69,
     category: "IP Connectivity",
     questionType: "Single-select",
-    question: `<img src="/images/ospf-area0-network.png" alt="Network diagram showing RouterA and RouterB connected via FastEthernet interfaces in OSPF Area 0. RouterA Fa1/0: 10.10.10.1/30, RouterB Fa1/0: 10.10.10.2/30" style="max-width: 600px; margin: 20px 0;" />
+    question: `<p><img src="/images/ospf-area0-network.png" alt="Network diagram showing RouterA and RouterB connected via FastEthernet interfaces in OSPF Area 0. RouterA Fa1/0: 10.10.10.1/30, RouterB Fa1/0: 10.10.10.2/30" style="max-width: 600px; margin: 20px 0;" /></p>
 
 <p>You administer the OSPF network in the above exhibit. </p>
 
@@ -2901,7 +2901,7 @@ correctAnswer: {
     category: "Network Access",
     questionType: "Multiple-select",
     question: `<div style="text-align:  center; margin-bottom: 20px;">
-  <img src="/images/671.png" alt="SwitchA connected to SwitchB EtherChannel diagram" style="max-width: 100%; height: auto;" />
+    <p><img src="/images/671.png" alt="SwitchA connected to SwitchB EtherChannel diagram" style="max-width: 100%; height: auto;" /></p>
 </div>
 
 <p>You want to establish an EtherChannel between SwitchA and SwitchB by using a Cisco-proprietary protocol.  After you configure the ports on SwitchA with the correct channel protocol, you issue the <strong>channel-group 1 mode auto</strong> command on those ports.  </p>
@@ -3842,7 +3842,7 @@ O 10.20.0.0/28 [110/64] via 192.168.10.1, 00:02:38, Serial0/1</pre>
     category: "IP Connectivity",
     questionType: "Single-select",
     question: `<div style="text-align: center; margin-bottom: 20px;">
-  <img src="/images/ospf-three-routers-topology.png" alt="Network topology showing RouterA connected to RouterB via FastEthernet, and RouterB connected to RouterC via Ethernet" style="max-width: 600px;" />
+  <p><img src="/images/ospf-three-routers-topology.png" alt="Network topology showing RouterA connected to RouterB via FastEthernet, and RouterB connected to RouterC via Ethernet" style="max-width: 600px;" /></p>
 </div>
 
 <p>You are configuring OSPF Area 0 on all three routers in the exhibit above. The link between RouterA and RouterB is a FastEthernet link.  The link between RouterB and RouterC is an Ethernet link. </p>
@@ -4201,7 +4201,7 @@ Cisco IP Phone 7961.</p>`,  // Explanation (wrap paragraphs in <p></p> tags)
   category: "Security Fundamentals",  // Category name
   questionType: "Single-select",
   question: `<p>You issue the show vlan brief command on Switch1 and receive the following partial output:</p>
-  <img src="/images/id_430.png" alt="code" style="max-width: 100%; height:  auto; margin: 20px 0;" />
+  <p><img src="/images/id_430.png" alt="code" style="max-width: 100%; height:  auto; margin: 20px 0;" /></p>
 <p>Which of the following statements is true? (Select the best answer.)</p>`,  // Question text (use `` for multi-line, add <p> tags if needed)
   options: [
     "DAI is configured on only GigabitEthernet 0/1 and GigabitEthernet 0/2.",  // Option A (index 0)
@@ -4309,7 +4309,7 @@ In this scenario, however, VLAN 1 has not been globally configured to use DAI.</
   questionType: "Single-select",
   question: `<p>Examine the network diagram below: </p>
 
-<img src="/images/ospf-network-066.png" alt="OSPF Network Topology" style="max-width: 100%; height:  auto; margin: 20px 0;" />
+<p><img src="/images/ospf-network-066.png" alt="OSPF Network Topology" style="max-width: 100%; height:  auto; margin: 20px 0;" /></p>
 
 <p>You administer the network in the above exhibit.  OSPF is configured with default settings.  RouterB is configured to use 192.51.100.1 as a default route. </p>
 
@@ -4475,7 +4475,7 @@ In this scenario, however, VLAN 1 has not been globally configured to use DAI.</
   questionType: "Multi-select",
   question: `<p>Examine the network diagram below:  </p>
 
-<img src="/images/ipv6-routing-081.png" alt="IPv6 Network Topology" style="max-width: 100%; height:   auto; margin: 20px 0;" />
+<p><img src="/images/ipv6-routing-081.png" alt="IPv6 Network Topology" style="max-width: 100%; height:   auto; margin: 20px 0;" /></p>
 
 <p>You have connected the GigabitEthernet 0/1 interface of RouterC to RouterB and configured the appropriate interface addresses on both routers. </p>
 
@@ -4597,7 +4597,7 @@ tcp 203.0.113.62:49912   10.1.7.7:49912    192.0.2.28:80   192.0.2.28:80</pre>
 
 <p>Typically, NAT is configured only for addresses on the inside network; therefore, the outside local and outside global address are often identical, as seen in this example.   The following graphic depicts the relationship between inside local, inside global, outside local, and outside global addresses:  </p>
 
-<img src="/images/nat-diagram-074.png" alt="NAT Address Translation Diagram" style="max-width: 100%; height:    auto; margin:  20px 0;" />
+<p><img src="/images/nat-diagram-074.png" alt="NAT Address Translation Diagram" style="max-width: 100%; height:    auto; margin:  20px 0;" /></p>
 
 <p>The inside local address is the IP address of HostA, 10.1.7.7.  The inside global address is the IP address of the external interface on RouterA, 203.0.113.62.  The outside local and outside global address is the IP address of HostB, 192.0.2.28.  The IP address of the internal interface on RouterA, 10.1.7.1, will not be displayed in the output of the <strong>show ip nat translations</strong> command.</p>
 
@@ -4661,7 +4661,7 @@ tcp 203.0.113.62:49912   10.1.7.7:49912    192.0.2.28:80   192.0.2.28:80</pre>
   questionType: "Single-select",
   question: `<p>Refer to the exhibit below: </p>
 
-<img src="/images/ip-phone-qos-652.png" alt="Network diagram showing Switch, IP Phone, and Host connected" style="max-width: 100%; height:  auto; margin: 20px 0;" />
+<p><img src="/images/ip-phone-qos-652.png" alt="Network diagram showing Switch, IP Phone, and Host connected" style="max-width: 100%; height:  auto; margin: 20px 0;" /></p>
 
 <p>Which of the following commands should you issue in interface configuration mode on the Catalyst 2950 switch to make the IP phone trust the CoS priority of incoming data packets generated by the attached host?  (Select the best answer.)</p>`,
   options: [
@@ -4694,7 +4694,7 @@ tcp 203.0.113.62:49912   10.1.7.7:49912    192.0.2.28:80   192.0.2.28:80</pre>
   questionType: "Single-select",
   question: `<p>You administer the network shown in the following exhibit:  </p>
 
-<img src="/images/network-acl-424.png" alt="Network topology showing RouterA, RouterB, RouterC, RouterD and hosts HostA, HostB, HostC, HostD" style="max-width: 100%; height:  auto; margin: 20px 0;" />
+<p><img src="/images/network-acl-424.png" alt="Network topology showing RouterA, RouterB, RouterC, RouterD and hosts HostA, HostB, HostC, HostD" style="max-width: 100%; height:  auto; margin: 20px 0;" /></p>
 
 <p>You issue the show running-config | section line command on RouterB and receive the following output:  </p>
 
@@ -5009,7 +5009,7 @@ O E2 172.150.0.0 [110/5] via 10.19.54.6, 0: 01:00, Ethernet2</pre>
   category: "Network Fundamentals",
   questionType: "Single-select",
   question: `<div style="text-align: center; margin-bottom: 20px;">
-  <img src="/images/632-router-topology.png" alt="Network topology showing RouterA and RouterB connected via point-to-point link, with 192.168.0.0/25 network shown above RouterB" style="max-width: 600px;" />
+  <p><img src="/images/632-router-topology.png" alt="Network topology showing RouterA and RouterB connected via point-to-point link, with 192.168.0.0/25 network shown above RouterB" style="max-width: 600px;" /></p>
 </div>
 
 <p>Which of the following subnet addresses is most appropriate for the point-to-point link between RouterA and RouterB?  (Select the best answer. )</p>`,
@@ -5237,9 +5237,9 @@ Which of the following will become the OSPF router ID on RouterA if the OSPF pro
   id: 425,
   category:  "Security Fundamentals",
   questionType: "Single-select",
-  question: `<img src="/images/dai-switchA-topology-425.png" alt="Switch Network Topology" style="max-width: 100%; height:  auto; margin:  20px 0;" />
+  question: `<p><img src="/images/dai-switchA-topology-425.png" alt="Switch Network Topology" style="max-width: 100%; height:  auto; margin:  20px 0;" /></p>
 
-Refer to the exhibit.  You want to enable DAI on SwitchA, and you want to ensure that traffic from each host is inspected before it is sent to SwitchB. 
+<p>Refer to the exhibit.  You want to enable DAI on SwitchA, and you want to ensure that traffic from each host is inspected before it is sent to SwitchB. </p>
 
 Which of the following command sequences should you issue?`,
   options: [

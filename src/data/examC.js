@@ -55,16 +55,15 @@ What kind of address is the destination address you have noticed in these frames
   correctAnswer: 0,
   explanation: `
 <b>Explanation:</b><br>
-A Media Access Control (MAC) address of FF-FF-FF-FF-FF-FF is an Ethernet broadcast address. A MAC address, also known as a physical address, is a 48-bit address that is permanently encoded on a network interface card (NIC). Each NIC has a specific MAC address and will ignore frames that are not intended for that address, the network broadcast address, or a relevant group address, Ethernet frames use unicast addresses to send data to a single device, and multicast addresses are used to simultaneously send the same data to a group of devices.<br><br>
-MAC addresses are written in hexadecimal format. With MAC addresses, numbers have a lower value than letters and the hexadecimal value A is lower than the hexadecimal value F. A MAC address is composed of six 8-bit octets for a total of 6 bytes of data in the entire address, as shown in the following diagram:<br>
-<img src="/images/623-mac-octets.png" alt="MAC address octets" style="max-width:100%;margin:12px 0;">
+<p>A Media Access Control (MAC) address of FF-FF-FF-FF-FF-FF is an Ethernet broadcast address. A MAC address, also known as a physical address, is a 48-bit address that is permanently encoded on a network interface card (NIC). Each NIC has a specific MAC address and will ignore frames that are not intended for that address, the network broadcast address, or a relevant group address, Ethernet frames use unicast addresses to send data to a single device, and multicast addresses are used to simultaneously send the same data to a group of devices.</p><br><br>
+<p>MAC addresses are written in hexadecimal format. With MAC addresses, numbers have a lower value than letters and the hexadecimal value A is lower than the hexadecimal value F. A MAC address is composed of six 8-bit octets for a total of 6 bytes of data in the entire address, as shown in the following diagram:</p><br>
+<p><img src="/images/623-mac-octets.png" alt="MAC address octets" style="max-width:100%;margin:12px 0;"></p><br>
 <br>
-The most significant bytes are at the beginning, or leftmost octet, and are transmitted first. Bytes decrease in significance as you move to the right through the address to the least significant octet appearing at the end, or rightmost octet. The first three octets represent the organizationally unique identifier (OUI), which is assigned by the Institute of Electrical and Electronics Engineers (IEEE) to identify the manufacturer of the device, and the last three octets make up the unique NIC-specific identifier assigned to the device by the manufacturer.<br><br>
-The significance of each octet follows the same rule of the overall address: the most significant bit is on the left, and the least significant bit is on the right. However, when transmitted, a bit defines form a byte in that the least significant bit of a byte is transmitted first. The two least significant bits of the most significant byte of a MAC address are used as indicator flags; these two bits are bit 2 and bit 1 in the example below:<br>
-<img src="/images/623-mac-address-bits.png" alt="MAC address bits" style="max-width:100%;margin:12px 0;">
-<br>
-The least significant bit, or bit 1, of the most significant byte is where a MAC address is designated as a unicast address or a multicast address; a 0 equates to unicast, and a 1 equates to multicast. The second least significant bit, or bit 2, is used to designate whether the MAC address is globally administered by the IEEE and carries an OUI or whether the MAC address is locally administered; a 0 indicates the presence of an OUI, and a 1 indicates a locally administered MAC address.<br><br>
-Several MAC addresses have been given special definitions by the IEEE. For example, the FF-FF-FF-FF-FF-FF address is reserved for use as the Ethernet broadcast address and the CF-00-00-00-00-00 address is reserved for Ethernet loopback testing. In addition, the Ethernet multicast range from 01-00-5E-00-00-00 through 01-00-5E-7F-FF-FF has been allocated for IP multicast use.
+<p>The most significant bytes are at the beginning, or leftmost octet, and are transmitted first. Bytes decrease in significance as you move to the right through the address to the least significant octet appearing at the end, or rightmost octet. The first three octets represent the organizationally unique identifier (OUI), which is assigned by the Institute of Electrical and Electronics Engineers (IEEE) to identify the manufacturer of the device, and the last three octets make up the unique NIC-specific identifier assigned to the device by the manufacturer.</p><br>
+<p>The significance of each octet follows the same rule of the overall address: the most significant bit is on the left, and the least significant bit is on the right. However, when transmitted, a bit defines form a byte in that the least significant bit of a byte is transmitted first. The two least significant bits of the most significant byte of a MAC address are used as indicator flags; these two bits are bit 2 and bit 1 in the example below:</p><br>
+<p><img src="/images/623-mac-address-bits.png" alt="MAC address bits" style="max-width:100%;margin:12px 0;"></p><br>
+<p>The least significant bit, or bit 1, of the most significant byte is where a MAC address is designated as a unicast address or a multicast address; a 0 equates to unicast, and a 1 equates to multicast. The second least significant bit, or bit 2, is used to designate whether the MAC address is globally administered by the IEEE and carries an OUI or whether the MAC address is locally administered; a 0 indicates the presence of an OUI, and a 1 indicates a locally administered MAC address.</p><br>
+<p>Several MAC addresses have been given special definitions by the IEEE. For example, the FF-FF-FF-FF-FF-FF address is reserved for use as the Ethernet broadcast address and the CF-00-00-00-00-00 address is reserved for Ethernet loopback testing. In addition, the Ethernet multicast range from 01-00-5E-00-00-00 through 01-00-5E-7F-FF-FF has been allocated for IP multicast use.</p>
 `,
   reference: [
     {
@@ -1005,21 +1004,21 @@ The BPDU filter feature prevents PortFast-enabled ports from sending or receivin
   correctAnswer: 3,
   explanation: `
 <b>Explanation:</b><br>
-The last available address for the subnetwork containing the host 48.25.24.71/21 is 48.25.31.254. An Internet Protocol (IP) address consists of four groups of eight binary bits, or 32 bits total. Each bit can store either a 1 or a 0 value. The address consists of two parts, a network portion and a host portion, which are divided by the use of a subnet mask. Like the IP address, the subnet mask is composed of four groups of eight binary bits containing either a 1 or a 0 value. Because each group contains eight bits of information, the groups are referred to as octets and each octet ranges from 0 through 255 in decimal value.
+<p>The last available address for the subnetwork containing the host 48.25.24.71/21 is 48.25.31.254. An Internet Protocol (IP) address consists of four groups of eight binary bits, or 32 bits total. Each bit can store either a 1 or a 0 value. The address consists of two parts, a network portion and a host portion, which are divided by the use of a subnet mask. Like the IP address, the subnet mask is composed of four groups of eight binary bits containing either a 1 or a 0 value. Because each group contains eight bits of information, the groups are referred to as octets and each octet ranges from 0 through 255 in decimal value.</p>
 <br><br>
-To determine the subnet address range of a given IP address/subnet mask combination, you must first identify the interesting octet within the subnet mask. The interesting octet is the first octet that contains a decimal value other than 255 or 0.<br><br>
-The subnet mask in this example is /21. This notation is known as Classless Inter-Domain Routing (CIDR) notation. To calculate the network and host information for the network, you will need to convert the subnet mask to dotted decimal notation.<br><br>
-To convert /21 from CIDR notation to dotted decimal notation, begin at the left and set the first 21 bits to a value of 1. Set the remaining 11 bits to 0.
+<p>To determine the subnet address range of a given IP address/subnet mask combination, you must first identify the interesting octet within the subnet mask. The interesting octet is the first octet that contains a decimal value other than 255 or 0.</p><br><br>
+<p>The subnet mask in this example is /21. This notation is known as Classless Inter-Domain Routing (CIDR) notation. To calculate the network and host information for the network, you will need to convert the subnet mask to dotted decimal notation.</p><br><br>
+<p>To convert /21 from CIDR notation to dotted decimal notation, begin at the left and set the first 21 bits to a value of 1. Set the remaining 11 bits to 0.</p>
 <pre>
 /21 = 11111111.11111111.11111000.00000000
 </pre>
 Binary bit weight increases in significance from right to left, with the leftmost bit in each octet worth a decimal value of 128 and the rightmost bit worth a decimal value of 1. The decimal value for each octet is computed by adding up the bit weight for any bit containing a 1 within the octet. The following exhibit displays how to calculate the decimal value of the subnet mask octets based on the binary value assigned to each bit:
-<img src="/images/619-subnetting-binary.png" alt="Subnet mask binary weights">
+<p><img src="/images/619-subnetting-binary.png" alt="Subnet mask binary weights"></p>
 <br>
 /21 = 11111111.11111111.11111000.00000000 = 255.255.248.0
 <br><br>
 Now that the subnet mask is in dotted decimal notation, the interesting octet is easily identified, because the third octet has a decimal value of 248, not 255 or 0. Once the interesting octet has been identified, the network numbers are determined by the weight of the least significant bit that is set to 1 in the interesting octet. Another way to determine the network numbers is to simply subtract the decimal value of the interesting octet from 256. The difference between 256 and 248 is 8; therefore, the networks will be arranged in multiples of 8.
-<img src="/images/619-subnetting-multiples.png" alt="Subnetting multiples">
+<p><img src="/images/619-subnetting-multiples.png" alt="Subnetting multiples"></p>
 <br>
 A partial list of the available networks using the 255.255.248.0 subnet mask in this scenario contains the following:
 <ul>
@@ -1955,10 +1954,10 @@ Unicast site-local addresses, not link-local addresses, are used for unique loca
   id: 86,
   category: "IP Services",
   questionType: "Single-select",
-  question: `<img src="/images/q86.png" alt="ygb" style="max-width:100%;margin:12px 0;">
-You are the administrator for the network shown above. DHCP services for the network are provided by the DHCP server on NetworkB. DHCP services are not running on the routers.
+  question: `<p><img src="/images/q86.png" alt="ygb" style="max-width:100%;margin:12px 0;"></p>
+<p>You are the administrator for the network shown above. DHCP services for the network are provided by the DHCP server on NetworkB. DHCP services are not running on the routers.</p>
 
-Which of the following commands should you issue to enable clients on NetworkA to receive IP addresses from the DHCP server? (Select the best answer.)`,
+<p>Which of the following commands should you issue to enable clients on NetworkA to receive IP addresses from the DHCP server? (Select the best answer.)</p>`,
   options: [
     "RouterB(config-if)#ip helper-address 10.10.1.2",
     "RouterB(config-if)#ip helper-address 10.10.3.5",
@@ -2324,8 +2323,8 @@ udp 192.0.2.7:49713 10.20.30.55:49713   203.0.113.9:69      203.0.113.9:69<br>
 tcp 192.0.2.8:49716 10.20.30.32:49716   203.0.113.13:23     203.0.113.13:23
 <br><br>
 HostA establishes a TFTP connection with HostB.<br>
-What is the IP address of HostA? (Select the best answer.)<br>
-<img src="/images/q73.png" alt="NAT-translation-diagram" style="max-width:100%;margin:12px 0;">
+<p>What is the IP address of HostA? (Select the best answer.)</p>
+<p><img src="/images/q73.png" alt="NAT-translation-diagram" style="max-width:100%;margin:12px 0;"></p>
 `,
   options: [
     "10.20.30.32",
@@ -2337,24 +2336,26 @@ What is the IP address of HostA? (Select the best answer.)<br>
   ],
   correctAnswer: 1,
   explanation: `
-The Internet Protocol (IP) address of HostA is 10.20.30.55. The show ip nat translations command displays the mapping between internal and external IP addresses when Network Address Translation (NAT) is configured on a router. NAT translates between public and private IP addresses to enable hosts on a privately addressed network to access a public network, such as the Internet. By default, NAT provides only a one-to-one mapping of addresses. If multiple hosts require simultaneous access to the public network, NAT must be configured to use either a pool of public IP addresses or NAT overloading. In this scenario, RouterA is configured with a pool of public IP addresses.
+<p>The Internet Protocol (IP) address of HostA is 10.20.30.55. The show ip nat translations command displays the mapping between internal and external IP addresses when Network Address Translation (NAT) is configured on a router. NAT translates between public and private IP addresses to enable hosts on a privately addressed network to access a public network, such as the Internet. By default, NAT provides only a one-to-one mapping of addresses. If multiple hosts require simultaneous access to the public network, NAT must be configured to use either a pool of public IP addresses or NAT overloading. In this scenario, RouterA is configured with a pool of public IP addresses.</p>
 
-The show ip nat translations command displays five fields of information for each NAT translation session:
+<p>The show ip nat translations command displays five fields of information for each NAT translation session:</p>
 
-• Protocol – displays the type of protocol in the translated session, such as Internet Control Message Protocol (ICMP), Transmission Control Protocol (TCP), or User Datagram Protocol (UDP)
-• Inside global address – displays an IP address that represents an inside host as seen by hosts on the outside network; the inside global address, which is an IP address in RouterA’s NAT pool, is 192.0.2.7
-• Inside local address – displays the IP address configured on a host on the local network, such as 10.20.30.32 or 10.20.30.55
-• Outside local address – displays the IP address of a host on the outside network as seen from a host on the inside network
-• Outside global address – displays the IP address configured on a host on the outside network
+<ul>
+<li>Protocol – displays the type of protocol in the translated session, such as Internet Control Message Protocol (ICMP), Transmission Control Protocol (TCP), or User Datagram Protocol (UDP)</li>
+<li>Inside global address – displays an IP address that represents an inside host as seen by hosts on the outside network; the inside global address, which is an IP address in RouterA’s NAT pool, is 192.0.2.7</li>
+<li>Inside local address – displays the IP address configured on a host on the local network, such as 10.20.30.32 or 10.20.30.55</li>
+<li>Outside local address – displays the IP address of a host on the outside network as seen from a host on the inside network</li>
+<li>Outside global address – displays the IP address configured on a host on the outside network</li>
+</ul>
 
-Typically, NAT is configured only for addresses on the inside network; therefore, the outside local and outside global address are often identical, as seen in this example. The following graphic depicts the relationship between inside local, inside global, outside local, and outside global addresses:
-<img src="/images/q73.png" alt="NAT-translation-diagram" style="max-width:100%;margin:12px 0;">
+<p>Typically, NAT is configured only for addresses on the inside network; therefore, the outside local and outside global address are often identical, as seen in this example. The following graphic depicts the relationship between inside local, inside global, outside local, and outside global addresses:</p>
+<p><img src="/images/q73.png" alt="NAT-translation-diagram" style="max-width:100%;margin:12px 0;"></p>
 
-In this scenario, 10.20.30.55 is the inside local address, 192.0.2.7 is the inside global address, and 203.0.113.9 is the outside local and outside global address.
+<p>In this scenario, 10.20.30.55 is the inside local address, 192.0.2.7 is the inside global address, and 203.0.113.9 is the outside local and outside global address.</p>
 
-When HostA initiates a Trivial File Transfer Protocol (TFTP) connection with HostB, it sends packets to 203.0.113.9 on UDP port 69. HostA also chooses an ephemeral port number that HostB will use when communicating back to HostA. Ephemeral ports are generally numbered from 49152 through 65535. When HostB at 203.0.113.9 responds to HostA, it will send packets to 192.0.2.7 on UDP port 49713.
+<p>When HostA initiates a Trivial File Transfer Protocol (TFTP) connection with HostB, it sends packets to 203.0.113.9 on UDP port 69. HostA also chooses an ephemeral port number that HostB will use when communicating back to HostA. Ephemeral ports are generally numbered from 49152 through 65535. When HostB at 203.0.113.9 responds to HostA, it will send packets to 192.0.2.7 on UDP port 49713.</p>
 
-The IP address 10.20.30.32 is the address of a host that is establishing a Telnet connection to 203.0.113.13 on TCP port 23. RouterA uses NAT to map the host’s IP address to 192.0.2.8, which is another public IP address in RouterA’s NAT pool.
+<p>The IP address 10.20.30.32 is the address of a host that is establishing a Telnet connection to 203.0.113.13 on TCP port 23. RouterA uses NAT to map the host’s IP address to 192.0.2.8, which is another public IP address in RouterA’s NAT pool.</p>
 `,
   reference: [
     {
@@ -2814,10 +2815,10 @@ Although port FastEthernet 0/8 is configured to use PortFast, PortFast will not 
   id: 672,
   category: "Network Access",
   questionType: "Multi-select",
-  question: `<img src="/images/q672.png" alt="etherchannel-modes" style="max-width:100%;margin:12px 0;">
-You want to establish an EtherChannel between SwitchA and SwitchB that uses an IEEE standards-based protocol.
+  question: `<p><img src="/images/q672.png" alt="etherchannel-modes" style="max-width:100%;margin:12px 0;"></p>
+<p>You want to establish an EtherChannel between SwitchA and SwitchB that uses an IEEE standards-based protocol.</p>
 
-Which of the following channel-group modes could you configure on the switches? (Select 2 choices.)`,
+<p>Which of the following channel-group modes could you configure on the switches? (Select 2 choices.)</p>`,
   options: [
     "SwitchA set to auto and SwitchB set to auto",
     "SwitchA set to active and SwitchB set to active",
@@ -2974,10 +2975,10 @@ Not every Layer 3 security mechanism is compatible with every Layer 2 security m
   id: 653,
   category: "Network Access",
   questionType: "Single-select",
-  question: `<img src="/images/q653.png" alt="ip-phone-trust-boundary" style="max-width:100%;margin:12px 0;">
-Refer to the exhibit.
+  question: `<p><img src="/images/q653.png" alt="ip-phone-trust-boundary" style="max-width:100%;margin:12px 0;"></p>
+<p>Refer to the exhibit.</p>
 
-Which of the following should you do to move the trust boundary to the IP phone? (Select the best answer.)`,
+<p>Which of the following should you do to move the trust boundary to the IP phone? (Select the best answer.)</p>`,
   options: [
     "Issue the switchport priority extend cos command on the switch port connected to the IP phone.",
     "Issue the mls qos trust cos command on the IP phone.",
@@ -3136,10 +3137,10 @@ Cisco IOS is a network device operating system (OS), not an enterprise managemen
   id: 64,
   category: "IP Connectivity",
   questionType: "Single-select",
-  question: `<img src="/images/q64.png" alt="ospf-network-diagram" style="max-width:100%;margin:12px 0;">
-You administer the OSPF network above.
+  question: `<p><img src="/images/q64.png" alt="ospf-network-diagram" style="max-width:100%;margin:12px 0;"></p>
+<p>You administer the OSPF network above.</p>
 
-You issue the <b>show running-config</b> command on RouterA and receive the following output:
+<p>You issue the <b>show running-config</b> command on RouterA and receive the following output:</p>
 <pre>
 router ospf 100
  log-adjacency-changes
@@ -3774,33 +3775,33 @@ The OnePK API is a Cisco-proprietary API. It uses Java, C, or Python to configur
   ],
   correctAnswer: 3,
   explanation: `
-The Frame Control (FC) field of an Institute of Electrical & Electronics Engineers (IEEE) 802.11 Media Access Control (MAC) frame is used to indicate whether the frame is a management frame. The FC field is the first field in a MAC frame, and its 2 bytes of data are subdivided into 11 related fields of information, such as wireless protocol, frame type, and frame subtype, as shown in the following diagram:
+<p>The Frame Control (FC) field of an Institute of Electrical & Electronics Engineers (IEEE) 802.11 Media Access Control (MAC) frame is used to indicate whether the frame is a management frame. The FC field is the first field in a MAC frame, and its 2 bytes of data are subdivided into 11 related fields of information, such as wireless protocol, frame type, and frame subtype, as shown in the following diagram:</p>
 
-<img src="/images/q692.png" alt="802.11 MAC Frame" style="max-width:100%;margin:12px 0;">
+<p><img src="/images/q692.png" alt="802.11 MAC Frame" style="max-width:100%;margin:12px 0;"></p>
 
-The Protocol Version field is a 2-bit field that identifies the 802.11 protocol used by the frame. The 2-bit Type field identifies which type of 802.11 frame follows. There are three general types of 802.11 frames: control, management, and data. The 4-bit Sub Type field further identifies what subset of frame can be expected. For example, if the Type field identifies the frame as a management frame, the Sub Type field might identify the frame as a beacon frame, which is a type of management frame.
+<p>The Protocol Version field is a 2-bit field that identifies the 802.11 protocol used by the frame. The 2-bit Type field identifies which type of 802.11 frame follows. There are three general types of 802.11 frames: control, management, and data. The 4-bit Sub Type field further identifies what subset of frame can be expected. For example, if the Type field identifies the frame as a management frame, the Sub Type field might identify the frame as a beacon frame, which is a type of management frame.</p>
 
-The To DS and From DS fields are used to identify if the frame is destined to or transmitted from the distribution system (DS). For example, if the To DS field was set and the From DS field was unset, this would indicate that the frame was traveling from the wireless network to a computer that is connected to the wired network, or DS. If the To DS field is unset and the From DS field is set, then the frame is traveling to the wireless network from the wired network. If neither field is set, then the frame is not intended to leave the wireless network.
+<p>The To DS and From DS fields are used to identify if the frame is destined to or transmitted from the distribution system (DS). For example, if the To DS field was set and the From DS field was unset, this would indicate that the frame was traveling from the wireless network to a computer that is connected to the wired network, or DS. If the To DS field is unset and the From DS field is set, then the frame is traveling to the wireless network from the wired network. If neither field is set, then the frame is not intended to leave the wireless network.</p>
 
-The More Fragments field indicates whether the frame is fragmented and if additional fragments follow. The Retry field indicates whether the frame has been retransmitted; this field is only applicable to management and data frames.
+<p>The More Fragments field indicates whether the frame is fragmented and if additional fragments follow. The Retry field indicates whether the frame has been retransmitted; this field is only applicable to management and data frames.</p>
 
-The Power Management field identifies the power mode of the client, which is commonly referred to as the station (STA). The STA can be in power save mode or active mode, and the Power Management field of a frame is used to inform the access point (AP) of the current state of the STA. The More Data field indicates that the AP has additional data buffered for the STA. This field is commonly used with broadcast and multicast frames.
+<p>The Power Management field identifies the power mode of the client, which is commonly referred to as the station (STA). The STA can be in power save mode or active mode, and the Power Management field of a frame is used to inform the access point (AP) of the current state of the STA. The More Data field indicates that the AP has additional data buffered for the STA. This field is commonly used with broadcast and multicast frames.</p>
 
-The WEP field indicates whether the frame data is encrypted. Finally, the Strict field indicates whether data frames can be processed in an order different from which they were received.
+<p>The WEP field indicates whether the frame data is encrypted. Finally, the Strict field indicates whether data frames can be processed in an order different from which they were received.</p>
 
-The remaining fields in an 802.11 frame are as follows:
+<p>The remaining fields in an 802.11 frame are as follows:</p>
 
-<img src="/images/q692_2.png" alt="802.11 MAC Subfields" style="max-width:100%;margin:12px 0;">
+<p><img src="/images/q692_2.png" alt="802.11 MAC Subfields" style="max-width:100%;margin:12px 0;"></p>
 
-The Duration (DUR) field is a 2-byte field that is used mainly by control frames to indicate transmission times. However, this field is also used by the Power Save (PS) poll control frame to indicate the association identity (AID) of a client.
+<p>The Duration (DUR) field is a 2-byte field that is used mainly by control frames to indicate transmission times. However, this field is also used by the Power Save (PS) poll control frame to indicate the association identity (AID) of a client.</p>
 
-The address fields, Address 1 (ADD1), Address 2 (ADD2), Address 3 (ADD3), and Address 4 (ADD4), are 6-byte fields used to convey MAC address and Basic Service Set Identifier (BSSID) information. What information resides in which address field is nearly dependent on the type of frame. However, ADD1, ADD2, and ADD3 typically contain a source MAC address, destination MAC address, and BSSID with the order being dependent on whether the frame is entering the DS, leaving the DS, or passing directly between ad-hoc wireless devices. The ADD4 field is only present for frames passing between devices in the DS, such as from one AP to another AP.
+<p>The address fields, Address 1 (ADD1), Address 2 (ADD2), Address 3 (ADD3), and Address 4 (ADD4), are 6-byte fields used to convey MAC address and Basic Service Set Identifier (BSSID) information. What information resides in which address field is nearly dependent on the type of frame. However, ADD1, ADD2, and ADD3 typically contain a source MAC address, destination MAC address, and BSSID with the order being dependent on whether the frame is entering the DS, leaving the DS, or passing directly between ad-hoc wireless devices. The ADD4 field is only present for frames passing between devices in the DS, such as from one AP to another AP.</p>
 
-The Sequence (SEQ) field is a 2-byte field that is subdivided to store two related pieces of information: the fragment number and sequence number of each frame.
+<p>The Sequence (SEQ) field is a 2-byte field that is subdivided to store two related pieces of information: the fragment number and sequence number of each frame.</p>
 
-The DATA portion of a frame varies in size and contains the frame's payload. For data frames, the payload is user data. However, for other frames, such as management frames, this portion of the frame might contain information such as supported data rates and cipher suites.
+<p>The DATA portion of a frame varies in size and contains the frame's payload. For data frames, the payload is user data. However, for other frames, such as management frames, this portion of the frame might contain information such as supported data rates and cipher suites.</p>
 
-Finally, the Frame Check Sequence (FCS) field contains a 4-byte cyclic redundancy check (CRC) value calculated from all the 802.11 header fields, including the data portion of the frame. This value is used by the receiving device to determine whether the frame was corrupted during transit.
+<p>Finally, the Frame Check Sequence (FCS) field contains a 4-byte cyclic redundancy check (CRC) value calculated from all the 802.11 header fields, including the data portion of the frame. This value is used by the receiving device to determine whether the frame was corrupted during transit.</p>
 `,
   reference: [
     {
@@ -3934,12 +3935,12 @@ Although not specific to users, physical access control allows administrators to
   category: "IP Connectivity",
   questionType: "Single-select",
   question: `
-<img src="/images/q68.png" alt="ospf-area0-diagram" style="max-width:100%;margin:12px 0;">
-You administer the network in the above exhibit.
+<p><img src="/images/q68.png" alt="ospf-area0-diagram" style="max-width:100%;margin:12px 0;"></p>
+<p>You administer the network in the above exhibit.</p>
 
-RouterA's Serial 0/0 interface is directly connected to the ISP and should provide the default route for the entire network. No static routes are configured on RouterB.
+<p>RouterA's Serial 0/0 interface is directly connected to the ISP and should provide the default route for the entire network. No static routes are configured on RouterB.</p>
 
-You issue the show running-config command on RouterA and receive the following partial output:
+<p>You issue the show running-config command on RouterA and receive the following partial output:</p>
 <pre>
 router ospf 100
  log-adjacency-changes
@@ -3986,8 +3987,8 @@ The network 10.10.10.0 0.0.0.3 area 0 command does not contain invalid syntax. T
   category: "Security Fundamentals",
   questionType: "Multi-select",
   question: `
-<img src="/images/q438.png" alt="switch-port-security-diagram" style="max-width:100%;margin:12px 0;">
-You administer the network shown in the exhibit. You issue the following commands on SwitchA:
+<p><img src="/images/q438.png" alt="switch-port-security-diagram" style="max-width:100%;margin:12px 0;"></p>
+<p>You administer the network shown in the exhibit. You issue the following commands on SwitchA:
 <pre>
 SwitchA#configure terminal
 SwitchA(config)#interface fastethernet 0/1
@@ -4227,10 +4228,10 @@ You cannot use PPP over Ethernet (PPPoE) to establish a secure VPN tunnel betwee
   category: "Network Access",
   questionType: "Multi-select",
   question: `
-<img src="/images/q513.png" alt="802.1q-trunking" style="max-width:100%;margin:12px 0;">
-You connect SwitchA and SwitchB as shown above. SwitchA is a Cisco switch, and SwitchB is a non-Cisco switch. You want to be able to trunk VLAN traffic between the two switches.
+<p><img src="/images/q513.png" alt="802.1q-trunking" style="max-width:100%;margin:12px 0;"></p>
+<p>You connect SwitchA and SwitchB as shown above. SwitchA is a Cisco switch, and SwitchB is a non-Cisco switch. You want to be able to trunk VLAN traffic between the two switches.</p>
 
-What commands should you issue on SwitchA? (Select 2 choices.)
+<p>What commands should you issue on SwitchA? (Select 2 choices.)</p>
 `,
   options: [
     "SwitchA(config-if)#switchport trunk encapsulation dot1q",
@@ -4506,8 +4507,8 @@ In both a controller-based network and a traditional network, the management pla
   category: "IP Services",
   questionType: "Single-select",
   question: `
-<img src="/images/q96.png" alt="HostA-DNS-defaultGW-WWW-server" style="max-width:100%;margin:12px 0;">
-A web browser on HostA sends an HTTP request to WWW_server. This is the first time HostA has ever sent a request to WWW_server. HostA does not use a hosts file. With which of the following devices does HostA establish a TCP connection in this scenario? (Select the best answer.)
+<p><img src="/images/q96.png" alt="HostA-DNS-defaultGW-WWW-server" style="max-width:100%;margin:12px 0;"></p>
+<p>A web browser on HostA sends an HTTP request to WWW_server. This is the first time HostA has ever sent a request to WWW_server. HostA does not use a hosts file. With which of the following devices does HostA establish a TCP connection in this scenario? (Select the best answer.)</p>
 `,
   options: [
     "only DNS_server and WWW_server",
@@ -4677,10 +4678,10 @@ Logging a verified user's file access is a form of accounting, not authenticatio
   category: "IP Connectivity",
   questionType: "Single-select",
   question: `
-<img src="/images/q62.png" alt="OSPF network diagram" style="max-width:100%;margin:12px 0;">
-You administer the OSPF network shown in the diagram above. The <b>auto-cost reference-bandwidth 1000</b> command has been issued on every router in the network.
+<p><img src="/images/q62.png" alt="OSPF network diagram" style="max-width:100%;margin:12px 0;"></p>
+<p>You administer the OSPF network shown in the diagram above. The <b>auto-cost reference-bandwidth 1000</b> command has been issued on every router in the network.</p>
 
-What is the cost of the route from RouterA to RouterC? (Select the best answer.)
+<p>What is the cost of the route from RouterA to RouterC? (Select the best answer.)</p>
 `,
   options: [
     "2",
@@ -4691,22 +4692,20 @@ What is the cost of the route from RouterA to RouterC? (Select the best answer.)
   ],
   correctAnswer: 1,
   explanation: `
-In this scenario, the cost of the route from RouterA to RouterC is 3. In an Open Shortest Path First (OSPF) network, a cost is associated with every link on the network. The OSPF routing process on each router calculates the optimal route to other routers in the network based on the sum of the link costs to those routers. The route with the lowest cost is considered the best. If there is more than one route with the same cost, then the OSPF routing process will use load balancing to distribute traffic evenly among the routes. The cost of each link and the optimal route from RouterA to RouterC are shown in the following exhibit:
+<p>In this scenario, the cost of the route from RouterA to RouterC is 3. In an Open Shortest Path First (OSPF) network, a cost is associated with every link on the network. The OSPF routing process on each router calculates the optimal route to other routers in the network based on the sum of the link costs to those routers. The route with the lowest cost is considered the best. If there is more than one route with the same cost, then the OSPF routing process will use load balancing to distribute traffic evenly among the routes. The cost of each link and the optimal route from RouterA to RouterC are shown in the following exhibit:</p>
 
-<img src="/images/q62_2.png" alt="OSPF route costs" style="max-width:100%;margin:12px 0;">
+<p><img src="/images/q62_2.png" alt="OSPF route costs" style="max-width:100%;margin:12px 0;"></p>
 
-The cost of a link is based on the interface bandwidth and the reference bandwidth, as indicated by the following formula:
+<p>The cost of a link is based on the interface bandwidth and the reference bandwidth, as indicated by the following formula:</p>
+<pre>cost = reference bandwidth / interface bandwidth</pre>
 
-cost = reference bandwidth / interface bandwidth
+<p>By default, the reference bandwidth is 100 megabits per second (Mbps). If a bandwidth has not been configured on an interface, the OSPF process will use the default value for the interface type. For example, a 100-Mbps Fast Ethernet interface has a default interface bandwidth of 100. The minimum supported cost for an OSPF interface is 1, and any values that calculate to less than 1 are rounded up to 1. Therefore, any link with an interface bandwidth greater than or equal to 100 Mbps will result in a cost of 1 by default.</p>
 
-By default, the reference bandwidth is 100 megabits per second (Mbps). If a bandwidth has not been configured on an interface, the OSPF process will use the default value for the interface type. For example, a 100-Mbps Fast Ethernet interface has a default interface bandwidth of 100. The minimum supported cost for an OSPF interface is 1, and any values that calculate to less than 1 are rounded up to 1. Therefore, any link with an interface bandwidth greater than or equal to 100 Mbps will result in a cost of 1 by default.
+<p>An OSPF process uses cost values to generate its shortest path first (SPF) tree and then to determine the optimal routes to all known networks. Because the minimum cost value is 1, the reference bandwidth should be a value greater than or equal to the bandwidth of the fastest routed link in the administrative domain.</p>
 
-An OSPF process uses cost values to generate its shortest path first (SPF) tree and then to determine the optimal routes to all known networks. Because the minimum cost value is 1, the reference bandwidth should be a value greater than or equal to the bandwidth of the fastest routed link in the administrative domain.
+<p>In this scenario, the <b>auto-cost reference-bandwidth 1000</b> command has modified the reference bandwidth to 1000 Mbps. Thus a 100-Mbps Fast Ethernet interface has a cost of 10 and a 1-gigabit-per-second (Gbps) Gigabit Ethernet interface has a cost of 1.</p>
 
-In this scenario, the <b>auto-cost reference-bandwidth 1000</b> command has modified the reference bandwidth to 1000 Mbps. Thus a 100-Mbps Fast Ethernet interface has a cost of 10 and a 1-gigabit-per-second (Gbps) Gigabit Ethernet interface has a cost of 1.
-
-When the reference bandwidth is less than the fastest routed link on the network, a situation can arise where the costs of two interfaces are the same even though their link speeds are different. If the reference bandwidth in this scenario were set to the default reference bandwidth of 100 Mbps, all of the interfaces would have a cost of 1. Because all links would then appear to have the same cost, the OSPF routing process would not be able to distinguish between the Fast Ethernet links and the Gigabit Ethernet links in the network. The OSPF process would then perform equal-cost load balancing to distribute packets evenly among the available paths. This distribution would cause some packets in this example to take suboptimal routes to their destinations.
-
+<p>When the reference bandwidth is less than the fastest routed link on the network, a situation can arise where the costs of two interfaces are the same even though their link speeds are different. If the reference bandwidth in this scenario were set to the default reference bandwidth of 100 Mbps, all of the interfaces would have a cost of 1. Because all links would then appear to have the same cost, the OSPF routing process would not be able to distinguish between the Fast Ethernet links and the Gigabit Ethernet links in the network. The OSPF process would then perform equal-cost load balancing to distribute packets evenly among the available paths. This distribution would cause some packets in this example to take suboptimal routes to their destinations.
 You can issue the <b>auto-cost</b> command from router configuration mode to change the reference bandwidth for an OSPF routing process. The syntax for the auto-cost command is <b>auto-cost reference-bandwidth ref-bw</b>, where <i>ref-bw</i> is an integer between 1 and 4294967 and is expressed in Mbps. Alternatively, you can manually configure a cost at the interface level by issuing the <b>ip ospf cost</b> command.
 `,
   reference: [
