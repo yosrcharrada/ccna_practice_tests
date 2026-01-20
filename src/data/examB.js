@@ -27,7 +27,7 @@ export const examBQuestions = [{
     address, the default gateway IP address, and the Domain Name System (DNS) server address.
     In addition, the output includes the subnet mask that is configured on the AP. The following is
     sample output from a Cisco AP:</p>
-    <img src="/images/code_B500.png" alt="code" style="max-width: 100%; height: auto;" />`,
+    <p><img src="/images/code_B500.png" alt="code" style="max-width: 100%; height: auto;" /></p>`,
     reference: [
       {
         title: "Cisco: Cisco Wireless Controller Command Reference",
@@ -84,7 +84,7 @@ export const examBQuestions = [{
     ],
     correctAnswer: 0,
     explanation: `<p>The route with the lowest administrative distance (AD) is installed in the routing table. The following list contains the most commonly used ADs: </p>
-    <img src="/images/table_B4.png" alt="table" style="max-width: 100%; height: auto;" />
+    <p><img src="/images/table_B4.png" alt="table" style="max-width: 100%; height: auto;" /></p>
 
     <p>When multiple routes to a network exist and each route uses a different routing protocol, a router prefers the routing protocol with the lowest AD. Therefore, if a router receives local routes to 192.168.1.0/26 from Enhanced Interior Gateway Routing Protocol (EIGRP), Open Shortest Path First (OSPF), and Routing Information Protocol (RIP), the EIGRP routes will be installed in the routing table and used to route packets; the OSPF and RIP routes will be maintained in the OSPF and RIP databases, respectively, until they are needed. </p>
     <p>ADs for a routing protocol can be manually configured by issuing the distance command in router configuration mode. For example, to change the AD of OSPF process ID 1 from 110 to 80, you could issue the following commands: </p>
@@ -481,7 +481,7 @@ holders.</p>`,
     category: "IP Connectivity",
     questionType: "Multi-select",
     question: `<p>You administer the OSPF network above.</p>
-    <img src="/images/ospf-topology-067.png" alt="OSPF Network Topology" style="max-width: 100%; height: auto; margin: 20px 0;" />
+    <p><img src="/images/ospf-topology-067.png" alt="OSPF Network Topology" style="max-width: 100%; height: auto; margin: 20px 0;" /></p>
     <p>You issue the <strong>default-information originate</strong> command on RouterA.</p>
     <p>Which of the following statements are true? (Select 2 choices.)</p>`,
     options: [
@@ -1090,13 +1090,13 @@ Which of the following statements are true?   (Select 2 choices.)`,
   id: 656,
   category: "Network Access",
   questionType:  "Single-select",
-  question: `<img src="/images/vtp-topology-656.png" alt="VTP Network Topology" style="max-width: 100%; height:  auto; margin: 20px 0;" />
+  question: `<p><img src="/images/vtp-topology-656.png" alt="VTP Network Topology" style="max-width: 100%; height:  auto; margin: 20px 0;" /></p>
 
-You recently upgraded your company's network to facilitate the addition of the new East Sales office. You want the VLAN topology of the new office to be the same as the existing West Sales office.  The Development department has its own VLAN configuration and should not be affected by the addition of the new switch.
+<p>You recently upgraded your company's network to facilitate the addition of the new East Sales office. You want the VLAN topology of the new office to be the same as the existing West Sales office.  The Development department has its own VLAN configuration and should not be affected by the addition of the new switch.</p>
 
-You have installed a new switch, Switch3, at the East Sales office and connected it to Switch2 with an 802.1Q trunk. Switch3 has been configured with a VTP domain name and placed into client mode. Later, you notice that the VLAN database on Switch3 is not being populated with VLAN information from Switch1. 
+<p>You have installed a new switch, Switch3, at the East Sales office and connected it to Switch2 with an 802.1Q trunk. Switch3 has been configured with a VTP domain name and placed into client mode. Later, you notice that the VLAN database on Switch3 is not being populated with VLAN information from Switch1. </p>
 
-What changes should you make to allow the VLAN database on Switch3 to be populated? `,
+<p>What changes should you make to allow the VLAN database on Switch3 to be populated? </p>`,
   options: [
     "Change the domain name on Switch2 to cisco.",
     "Manually populate the VLAN database on Switch3.",
@@ -1314,9 +1314,9 @@ What changes should you make to allow the VLAN database on Switch3 to be populat
   id: 651,
   category: "Network Access",
   questionType: "Single-select",
-  question: `<img src="/images/vlan-topology-651.png" alt="VLAN Trunking Topology" style="max-width:  100%; height: auto; margin: 20px 0;" />
+  question: `<p><img src="/images/vlan-topology-651.png" alt="VLAN Trunking Topology" style="max-width:  100%; height: auto; margin: 20px 0;" /></p>
 
-SwitchA and SwitchB are connected over an 802.1Q trunk link.  The native VLAN for the trunk link is configured as VLAN 11 on SwitchA.  The native VLAN for the trunk link is the default VLAN on SwitchB.  All of the hosts reside in the same IP subnet. 
+<p>SwitchA and SwitchB are connected over an 802.1Q trunk link.  The native VLAN for the trunk link is configured as VLAN 11 on SwitchA.  The native VLAN for the trunk link is the default VLAN on SwitchB.  All of the hosts reside in the same IP subnet. </p>
 
 Which of the hosts can HostA reach in this scenario?`,
   options: [
@@ -1895,7 +1895,7 @@ Which of the following IPv6 addresses will HostA use? (Select the best answer.)`
   category: "IP Connectivity",
   questionType: "Single-select",
   question: `
-<img src="/images/q011-ospf-topology.png" alt="OSPF and Static Routing Topology" style="max-width: 100%; height: auto; margin: 20px 0;" />
+<p><img src="/images/q011-ospf-topology.png" alt="OSPF and Static Routing Topology" style="max-width: 100%; height: auto; margin: 20px 0;" /></p>
 <p>You administer the network in the exhibit.</p>
 <p>You issue the <strong>show ip route</strong> command on Router1 and receive the following partial output:</p>
 <pre>
@@ -1951,10 +1951,10 @@ C    192.168.1.0 is directly connected, Ethernet0/0
 <p>To convert /21 from CIDR notation to dotted decimal notation, begin at the left and set the first 21 bits to a value of 1. Set the remaining 11 bits to 0.</p>
 <p>/21 = 11111111.11111111.11111000.00000000</p>
 <p>Binary bit weight increases in significance from right to left, with the leftmost bit in each octet worth a decimal value of 128 and the rightmost bit worth a decimal value of 1. The decimal value for each octet is computed by adding up the bit weight for any bit containing a 1 within the octet. The following exhibit displays how to calculate the decimal value of the subnet mask octets based on the binary value assigned to each bit:</p>
-<img src="/images/q620-subnet-mask-weight.png" alt="Subnet Mask Bit Weights" style="max-width: 100%; height: auto; margin: 12px 0;" />
+<p><img src="/images/q620-subnet-mask-weight.png" alt="Subnet Mask Bit Weights" style="max-width: 100%; height: auto; margin: 12px 0;" /></p>
 <p>/21 = 11111111.11111111.11111000.00000000 = 255.255.248.0</p>
 <p>Now that the subnet mask is in dotted decimal notation, the interesting octet is easily identified, because the third octet has a decimal value of 248, not 0 or 255. When the interesting octet has been identified, the network numbers are determined by the weight of the least significant bit that is set to 1 in the interesting octet. Another way to determine the network numbers is to simply subtract the decimal value of the interesting octet from 256. The difference between 256 and 248 is 8; therefore, the networks will be arranged in multiples of 8.</p>
-<img src="/images/q620-subnet-network-multiple.png" alt="Subnet Network Number Multiples" style="max-width: 100%; height: auto; margin: 12px 0;" />
+<p><img src="/images/q620-subnet-network-multiple.png" alt="Subnet Network Number Multiples" style="max-width: 100%; height: auto; margin: 12px 0;" /></p>
 <p>With the network numbers arranged by factors of 8, a partial list of the available networks using the 255.255.248.0 subnet mask in this scenario includes the following:</p>
 <ul>
 <li>48.25.0.0</li>
@@ -2004,7 +2004,7 @@ In which modes could you configure the corresponding channel group on SwitchB to
   correctAnswer: [2, 4],
   explanation: `<p>In this scenario, you could configure the channel group on SwitchB to operate in either <strong>active</strong> or <strong>passive</strong> mode to create a valid EtherChannel configuration. EtherChannel is used to bundle two or more identical, physical interfaces into a single logical link between switches. An EtherChannel can be permanently established between switches, or it can be negotiated by using one of two aggregation protocols: the Cisco-proprietary Port Aggregation Protocol (PAgP) or the open-standard Institute of Electrical and Electronics Engineers (IEEE) 802.3ad protocol, which is also known as Link Aggregation Control Protocol (LACP). The EtherChannel aggregation protocol must match on each switch, or they will be unable to dynamically establish an EtherChannel link between them.</p>
 <p>In addition, the channel group modes on each switch must operate in compatible modes to create a functional EtherChannel link. The <code>channel-group number mode {on | active | passive | {auto | desirable} [non-silent]}</code> command is used to configure the operating mode for an interface, or range of interfaces, in a channel group. The following table displays the channel-group modes that will result in a valid EtherChannel configuration:</p>
-<img src="/images/q675-etherchannel-modes.png" alt="EtherChannel LACP/PAgP Compatibility Table" style="max-width: 100%; height: auto; margin:12px 0;" />
+<p><img src="/images/q675-etherchannel-modes.png" alt="EtherChannel LACP/PAgP Compatibility Table" style="max-width: 100%; height: auto; margin:12px 0;" /></p>
 <p>The <strong>on</strong> keyword configures the channel group to unconditionally create the channel with no LACP or PAgP negotiation. In the <strong>on</strong> mode, a functional EtherChannel exists only if a channel group that is in the on mode is connected to another channel group that is also in the on mode. If either side of the link is not in the on mode, packet loss can occur. In addition, while in on mode, any LACP or PAgP configuration information is ignored by the channel group.</p>
 <p>The <strong>active</strong> and <strong>passive</strong> keywords can be used only with LACP. The <strong>active</strong> keyword configures the channel group to actively negotiate LACP, and the <strong>passive</strong> keyword configures the channel group to listen for LACP negotiation to be offered. Either or both sides of the link must be set to <strong>active</strong> to establish an EtherChannel over LACP; setting both sides to <strong>passive</strong> will not establish an EtherChannel over LACP.</p>
 <p>The <strong>auto</strong>, <strong>desirable</strong>, and <strong>non-silent</strong> keywords can be used only with PAgP. The <strong>desirable</strong> keyword configures the channel group to actively negotiate PAgP, and the <strong>auto</strong> keyword configures the channel group to listen for PAgP negotiation to be offered. Either or both sides of the link must be set to <strong>desirable</strong> to establish an EtherChannel over PAgP; setting both sides to <strong>auto</strong> will not establish an EtherChannel over PAgP. The optional <strong>non-silent</strong> keyword requires that a port receive PAgP packets before the port is added to the channel.</p>`,
@@ -2972,9 +2972,9 @@ You cannot configure an SSID by using a reserved keyword. For example, you canno
   category: "IP Connectivity",
   questionType: "Single-select",
   question: `
-<img src="/images/q079-topology.png" alt="network diagram" style="max-width: 100%; height: auto;">
+<p><img src="/images/q079-topology.png" alt="network diagram" style="max-width: 100%; height: auto;"></p>
 <br>
-What command would you issue on RouterA so that traffic can be routed to RouterC? (Select the best answer.)
+<p>What command would you issue on RouterA so that traffic can be routed to RouterC? (Select the best answer.)</p>
 `,
   options: [
     "ipv6 route 2001:DB8:1::/64 2001:DB8:2::2",
@@ -3208,9 +3208,9 @@ It is not necessary to issue the <b>ip ssh version 2</b> command. By default, Ci
   id: 13,
   category: "IP Connectivity",
   questionType: "Multi-select",
-  question: `<img src="/images/q013-topology.png" alt="network diagram" style="max-width: 100%; height: auto; margin-bottom: 16px;">
+  question: `<p><img src="/images/q013-topology.png" alt="network diagram" style="max-width: 100%; height: auto; margin-bottom: 16px;"></p>
 
-You administer the network shown in the diagram. You issue the <b>show ip route</b> command on RouterD and receive the following output:
+<p>You administer the network shown in the diagram. You issue the <b>show ip route</b> command on RouterD and receive the following output:</p>
 <pre>
 Gateway of last resort is not set
 
@@ -3526,8 +3526,8 @@ The loop guard feature prevents nondesignated ports from inadvertently forming b
   category: "IP Services",
   questionType: "Single-select",
   question: `
-<img src="/images/q515-nat-topology.png" alt="Cisco NAT Configuration Topology" style="max-width: 100%; height: auto; margin: 20px 0;" />
-You administer the network shown below:<br><br>
+<p><img src="/images/q515-nat-topology.png" alt="Cisco NAT Configuration Topology" style="max-width: 100%; height: auto; margin: 20px 0;" /></p>
+<p>You administer the network shown below:</p><br><br>
 <pre>
 RouterA#show running-config
 <output omitted>
@@ -3738,8 +3738,8 @@ FastEthernet0/0 is up, line protocol is up, encapsulation is ARPA
   category: "Security Fundamentals",
   questionType: "Single-select",
   question: `
-<img src="/images/q421-acl-topology.png" alt="ACL Topology" style="max-width:100%;height:auto;margin:20px 0;" />
-You administer the network shown in the exhibit. You issue the following commands on RouterA:<br>
+  <p><img src="/images/q421-acl-topology.png" alt="ACL Topology" style="max-width:100%;height:auto;margin:20px 0;" /></p>
+<p>You administer the network shown in the exhibit. You issue the following commands on RouterA:<br></p>
 <pre>
 RouterA(config)#access-list 100 deny ip 0.0.0.0 0.255.255.255 any
 RouterA(config)#access-list 101 deny ip 172.16.1.0 0.0.0.255 any
@@ -3824,7 +3824,7 @@ The <b>show ip nat translations</b> command displays five fields of information 
   <li>Outside global address – displays the IP address configured on a host on the outside network</li>
 </ul>
 Typically, NAT is configured only for addresses on the inside network; therefore, the outside local and outside global address are often identical, as seen in this example. The following graphic depicts the relationship between inside local, inside global, outside local, and outside global addresses:<br>
-<img src="/images/q75-nat-translation-diagram.png" alt="NAT Address Translation Diagram" style="max-width:100%;height:auto;margin:12px 0;" />
+<p><img src="/images/q75-nat-translation-diagram.png" alt="NAT Address Translation Diagram" style="max-width:100%;height:auto;margin:12px 0;" /></p>
 In this scenario, 10.20.30.32 is the inside local address, 192.0.2.8 is the inside global address, and 203.0.113.13 is the outside local and outside global address.<br><br>
 When the source device at 10.20.30.32 initiates a Telnet connection with the destination device at 203.0.113.13, it sends packets on TCP port 23. The source device also chooses an ephemeral port number that the destination device will use when communicating back to HostA. Ephemeral ports are generally numbered from 49152 through 65535. When the destination device in this scenario responds back, it will send packets over TCP port 49716.<br><br>
 The IP address 10.20.30.55 is the address of a host that is establishing a Trivial File Transfer Protocol connection to 203.0.113.9 on UDP port 69. RouterA uses NAT to map the host's IP address to 192.0.2.7, which is another public IP address in RouterA's NAT pool.
@@ -3861,7 +3861,7 @@ How many address fields can be expected in an 802.11 data frame that is sent fro
   correctAnswer: 3,
   explanation: `
 Three address fields can be expected in an Institute of Electrical and Electronics Engineers (IEEE) 802.11 data frame that is sent from a wireless station and destined to a host on the wired network. An 802.11 Media Access Control (MAC) frame is generally comprised of nine fields, as shown in the following diagram:<br>
-<img src="/images/q693-80211-mac-frame.png" alt="802.11 MAC frame fields" style="max-width:100%;height:auto;margin:12px 0;" />
+<p><img src="/images/q693-80211-mac-frame.png" alt="802.11 MAC frame fields" style="max-width:100%;height:auto;margin:12px 0;" /></p>
 The Frame Control (FC) field is used to identify the type of 802.11 frame, and its 2 bytes of data are subdivided into 11 related fields of information, such as wireless protocol, frame type, and frame subtype.<br><br>
 The Duration (DUR) field is a 2-byte field that is used mainly by control frames to indicate transmission timers. However, this field is also used by the Power Save (PS) Poll control frame to indicate the association identity (AID) of a client.<br><br>
 The address fields, Address 1 (ADD1), Address 2 (ADD2), Address 3 (ADD3), and Address 4 (ADD4), are 6-byte fields used to convey MAC address and Basic Service Set Identifier (BSSID) information. What information resides in which address field is entirely dependent on the type of frame. However, ADD1, ADD2, and ADD3 typically contain a source MAC address, destination MAC address, and BSSID with the order being dependent on whether the frame is entering the distribution system (DS), leaving the DS, or passing directly between ad-hoc wireless devices. The ADD4 field is only present for frames passing between devices in the DS, such as from one access point (AP) to another AP.<br><br>
@@ -3940,10 +3940,10 @@ Traffic over the native VLAN is not tagged, which means that an 802.1Q header is
   category: "Security Fundamentals",
   questionType: "Single-select",
   question: `
-<img src="/images/q423-acl-topology.png" alt="ACL Topology" style="max-width:100%;height:auto;margin:20px 0;" />
-You administer the network shown in the following exhibit:<br><br>
-RouterB has been assigned an IP address of 192.168.1.50 on the same /30 subnet as the RouterA interface that connects to RouterB.<br><br>
-After a failed attempt to telnet from RouterA to RouterB, you connect to the console of RouterB and issue the <b>show access-lists</b> command. The command produces the following output:
+<p><img src="/images/q423-acl-topology.png" alt="ACL Topology" style="max-width:100%;height:auto;margin:20px 0;" /></p>
+<p>You administer the network shown in the following exhibit:</p>
+<p>RouterB has been assigned an IP address of 192.168.1.50 on the same /30 subnet as the RouterA interface that connects to RouterB.</p>
+<p>After a failed attempt to telnet from RouterA to RouterB, you connect to the console of RouterB and issue the <b>show access-lists</b> command. The command produces the following output:</p>
 <pre>
 RouterB#show access-lists
 Standard IP access list 10
@@ -4204,10 +4204,10 @@ How many octets of a MAC address represent the OUI? (Select the best answer.)
   explanation: `
 The first three octets of a Media Access Control (MAC) address represent the organizationally unique identifier (OUI), which is assigned by the Institute of Electrical and Electronics Engineers (IEEE) to identify the manufacturer of the device. The last three octets make up the unique network interface card (NIC)-specific identifier assigned to the device by the manufacturer.<br><br>
 A MAC address, also known as a physical address, is a 48-bit address that is permanently encoded on a NIC. MAC addresses are written in hexadecimal format and are composed of six 8-bit octets for a total of 6 bytes of data in the entire address, as shown in the following diagram:<br>
-<img src="/images/q622-mac-oui-structure.png" alt="MAC Address OUI Diagram" style="max-width:100%;height:auto;margin:12px 0;" /><br>
+<p><img src="/images/q622-mac-oui-structure.png" alt="MAC Address OUI Diagram" style="max-width:100%;height:auto;margin:12px 0;" /></p>
 The most significant bytes are at the beginning, or leftmost octet, and are transmitted first. Bytes decrease in significance as you move to the right through the address to the least significant octet appearing at the end, or rightmost octet.<br><br>
 The significance of each octet follows the same rule of the overall address: the most significant bit is on the left, and the least significant bit is on the right. However, when transmitted, a bit differs from a byte in that the least significant bit of a byte is transmitted first. The two least significant bits of the most significant byte of a MAC address are used as indicator flags; these two bits are bit 2 and bit 1 in the example below:<br>
-<img src="/images/q622-mac-bits.png" alt="MAC Address bits diagram" style="max-width:100%;height:auto;margin:12px 0;" /><br>
+<p><img src="/images/q622-mac-bits.png" alt="MAC Address bits diagram" style="max-width:100%;height:auto;margin:12px 0;" /></p>
 The least significant bit, or bit 1, of the most significant byte is where a MAC address is designated as a unicast address or a multicast address; a 0 equates to unicast, and a 1 equates to multicast. The second least significant bit, or bit 2, is used to designate whether the MAC address is globally administered by the IEEE and carries an OUI or whether the MAC address is locally administered; a 0 indicates the presence of an OUI, and a 1 indicates a locally administered MAC address.
 `,
   reference: [
@@ -4402,12 +4402,12 @@ Fingerprints are an example of authentication by something you are. Authenticati
   category: "IP Connectivity",
   questionType: "Single-select",
   question: `
-<img src="/images/q065.png" alt="OSPF Area 0 Topology" style="max-width:100%;height:auto;margin:20px 0;" />
-You administer the network in the above exhibit. OSPF is configured with the default settings.
+<p><img src="/images/q065.png" alt="OSPF Area 0 Topology" style="max-width:100%;height:auto;margin:20px 0;" /></p>
+<p>You administer the network in the above exhibit. OSPF is configured with the default settings.</p>
 
-You issue the <b>show ip route ospf</b> command on RouterE.
+<p>You issue the <b>show ip route ospf</b> command on RouterE.</p>
 
-Which of the following are you least likely to see in the output? (Select the best answer.)
+<p>Which of the following are you least likely to see in the output? (Select the best answer.)</p>
 `,
   options: [
     "O    192.0.3.1 [110/66] via 10.10.10.7, 00:23:40, FastEthernet1/0",
@@ -4576,9 +4576,9 @@ JSON is a data modeling language that returns data in the form of an object that
   category: "IP Services",
   questionType: "Single-select",
   question: `
-<img src="/images/q512.png" alt="DHCP Relay Topology" style="max-width:100%;height:auto;margin:20px 0;" />
-You administer the network in the topology diagram.<br><br>
-RouterA is configured as a DHCP server. In an effort to centralize the administration of DHCP services, you have decided to configure RouterB as a DHCP relay agent rather than configure it as a DHCP server. You issue the <b>show running-config</b> command on RouterA and receive the following partial output:<br>
+<p><img src="/images/q512.png" alt="DHCP Relay Topology" style="max-width:100%;height:auto;margin:20px 0;" /></p>
+<p>You administer the network in the topology diagram.</p>
+<p>RouterA is configured as a DHCP server. In an effort to centralize the administration of DHCP services, you have decided to configure RouterB as a DHCP relay agent rather than configure it as a DHCP server. You issue the <b>show running-config</b> command on RouterA and receive the following partial output:</p>
 <pre>
 RouterA#show running-config
 <output omitted>
@@ -4929,10 +4929,10 @@ Routers in a single HSRP group cannot forward a portion of the traffic in a load
   category: "Security Fundamentals",
   questionType: "Single-select",
   question: `
-<img src="/images/426-dai-topology.png" alt="DAI Topology" style="max-width: 100%; height: auto; margin: 18px 0;" />
-You are configuring security for the network shown in the topology diagram. You want to configure DAI on Switch1.
+<p><img src="/images/426-dai-topology.png" alt="DAI Topology" style="max-width: 100%; height: auto; margin: 18px 0;" /></p>
+<p>You are configuring security for the network shown in the topology diagram. You want to configure DAI on Switch1.</p>
 
-Which port or ports on the switch should you configure as trusted? (Select the best answer.)
+<p>Which port or ports on the switch should you configure as trusted? (Select the best answer.)</p>
 `,
   options: [
     "ports Fa1/1, Fa1/2, Fa1/3, and Fa1/4",
